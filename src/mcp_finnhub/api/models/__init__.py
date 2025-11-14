@@ -1,6 +1,21 @@
-"""Pydantic response models for Finnhub API.
+"""Pydantic response models for Finnhub API responses."""
 
-TODO: Implement in Sprint 2.2
-"""
+from mcp_finnhub.api.models.common import (
+    CandleResponse,
+    CompanyProfile,
+    MarketStatusResponse,
+    NewsArticle,
+    QuoteResponse,
+    Resolution,
+    SymbolLookupResult,
+)
 
-from __future__ import annotations
+__all__ = [
+    "CandleResponse",
+    "CompanyProfile",
+    "MarketStatusResponse",
+    "NewsArticle",
+    "QuoteResponse",
+    "Resolution",
+    "SymbolLookupResult",
+]
