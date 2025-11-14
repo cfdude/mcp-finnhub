@@ -17,6 +17,13 @@ from mcp_finnhub.api.models.market import (
     FinancialsResponse,
     SymbolSearchResponse,
 )
+from mcp_finnhub.api.models.news import (
+    InsiderSentimentResponse,
+    InsiderTransaction,
+    NewsSentimentResponse,
+    SentimentBuzz,
+    SentimentScore,
+)
 from mcp_finnhub.api.models.technical import (
     AggregateSignalsResponse,
     IndicatorResponse,
@@ -46,6 +53,12 @@ __all__ = [
     "FinancialReport",
     "FinancialsResponse",
     "SymbolSearchResponse",
+    # News and sentiment models
+    "InsiderSentimentResponse",
+    "InsiderTransaction",
+    "NewsSentimentResponse",
+    "SentimentBuzz",
+    "SentimentScore",
     # Technical analysis models
     "AggregateSignalsResponse",
     "IndicatorResponse",
