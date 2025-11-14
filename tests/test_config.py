@@ -6,12 +6,15 @@ coverage of environment variable loading, validation, and edge cases.
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from pydantic import ValidationError
 
 from mcp_finnhub.config import AppConfig, ToolConfig, load_config
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class TestToolConfig:
@@ -324,7 +327,9 @@ class TestLoadConfig:
         assert config.debug is True
         assert config.mock_responses is True
 
-    def test_load_tool_config_from_environment(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_load_tool_config_from_environment(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         """Test loading tool configuration from environment variables."""
         monkeypatch.setenv("FINNHUB_API_KEY", "test_key")
         monkeypatch.setenv("FINNHUB_STORAGE_DIR", str(tmp_path / "data"))

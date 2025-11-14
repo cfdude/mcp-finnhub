@@ -6,6 +6,7 @@ variable loading and tool enable/disable functionality.
 
 from __future__ import annotations
 
+import contextlib
 import os
 from pathlib import Path
 from typing import Any
@@ -237,50 +238,36 @@ def load_config(**overrides: Any) -> AppConfig:
 
     # MCP Server Configuration
     if token_limit := os.getenv("FINNHUB_SAFE_TOKEN_LIMIT"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["safe_token_limit"] = int(token_limit)
-        except ValueError:
-            pass
 
     if rate_limit := os.getenv("FINNHUB_RATE_LIMIT_RPM"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["rate_limit_rpm"] = int(rate_limit)
-        except ValueError:
-            pass
 
     if timeout := os.getenv("FINNHUB_REQUEST_TIMEOUT"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["request_timeout"] = int(timeout)
-        except ValueError:
-            pass
 
     if cache := os.getenv("FINNHUB_ENABLE_CACHE"):
         env_config["enable_cache"] = cache.lower() in ("true", "1", "yes")
 
     if cache_ttl := os.getenv("FINNHUB_CACHE_TTL"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["cache_ttl"] = int(cache_ttl)
-        except ValueError:
-            pass
 
     # Background Job Configuration
     if max_jobs := os.getenv("FINNHUB_MAX_CONCURRENT_JOBS"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["max_concurrent_jobs"] = int(max_jobs)
-        except ValueError:
-            pass
 
     if job_timeout := os.getenv("FINNHUB_JOB_TIMEOUT"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["job_timeout"] = int(job_timeout)
-        except ValueError:
-            pass
 
     if cleanup := os.getenv("FINNHUB_JOB_CLEANUP_AFTER"):
-        try:
+        with contextlib.suppress(ValueError):
             env_config["job_cleanup_after"] = int(cleanup)
-        except ValueError:
-            pass
 
     # Logging Configuration
     if log_level := os.getenv("FINNHUB_LOG_LEVEL"):

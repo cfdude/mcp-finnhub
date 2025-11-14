@@ -9,6 +9,20 @@ from mcp_finnhub.api.models.common import (
     Resolution,
     SymbolLookupResult,
 )
+from mcp_finnhub.api.models.fundamentals import (
+    BasicFinancials,
+    BasicFinancialsResponse,
+    DividendData,
+    ReportedFinancial,
+    ReportedFinancialsResponse,
+    RevenueBreakdownData,
+    RevenueBreakdownResponse,
+    RevenueGeography,
+    RevenueProduct,
+    SecFinancialData,
+    SecFinancialsResponse,
+    SplitData,
+)
 from mcp_finnhub.api.models.market import (
     EarningsData,
     EarningsResponse,
@@ -38,36 +52,49 @@ from mcp_finnhub.api.models.technical import (
 )
 
 __all__ = [
+    # Technical analysis models
+    "AggregateSignalsResponse",
+    # Fundamentals models
+    "BasicFinancials",
+    "BasicFinancialsResponse",
     # Common models
     "CandleResponse",
     "CompanyProfile",
-    "MarketStatusResponse",
-    "NewsArticle",
-    "QuoteResponse",
-    "Resolution",
-    "SymbolLookupResult",
+    "DividendData",
     # Market data models
     "EarningsData",
     "EarningsResponse",
     "FinancialMetric",
     "FinancialReport",
     "FinancialsResponse",
-    "SymbolSearchResponse",
+    "IndicatorResponse",
+    "IndicatorValue",
     # News and sentiment models
     "InsiderSentimentResponse",
     "InsiderTransaction",
+    "MarketStatusResponse",
+    "NewsArticle",
     "NewsSentimentResponse",
-    "SentimentBuzz",
-    "SentimentScore",
-    # Technical analysis models
-    "AggregateSignalsResponse",
-    "IndicatorResponse",
-    "IndicatorValue",
     "Pattern",
     "PatternRecognitionResponse",
+    "QuoteResponse",
+    "ReportedFinancial",
+    "ReportedFinancialsResponse",
+    "Resolution",
+    "RevenueBreakdownData",
+    "RevenueBreakdownResponse",
+    "RevenueGeography",
+    "RevenueProduct",
+    "SecFinancialData",
+    "SecFinancialsResponse",
+    "SentimentBuzz",
+    "SentimentScore",
     "SignalCount",
+    "SplitData",
     "SupportResistanceLevel",
     "SupportResistanceResponse",
+    "SymbolLookupResult",
+    "SymbolSearchResponse",
     "TechnicalAnalysis",
     "TrendInfo",
 ]

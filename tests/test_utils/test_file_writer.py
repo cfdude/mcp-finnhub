@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from mcp_finnhub.utils.file_writer import FileWriter
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class TestFileWriter:

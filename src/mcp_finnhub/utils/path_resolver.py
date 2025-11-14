@@ -6,7 +6,10 @@ with protection against directory traversal attacks.
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class PathResolver:
@@ -173,33 +176,23 @@ class PathResolver:
 
         # Check for path traversal attempts
         if ".." in name:
-            raise ValueError(
-                f"{field_name} cannot contain '..': {name}"
-            )
+            raise ValueError(f"{field_name} cannot contain '..': {name}")
 
         # Check for absolute paths
         if name.startswith("/") or name.startswith("\\"):
-            raise ValueError(
-                f"{field_name} cannot be an absolute path: {name}"
-            )
+            raise ValueError(f"{field_name} cannot be an absolute path: {name}")
 
         # Check for null bytes
         if "\x00" in name:
-            raise ValueError(
-                f"{field_name} cannot contain null bytes"
-            )
+            raise ValueError(f"{field_name} cannot contain null bytes")
 
         # Ensure the resolved path stays within storage_dir
         try:
             test_path = (self.storage_dir / name).resolve()
             if not str(test_path).startswith(str(self.storage_dir)):
-                raise ValueError(
-                    f"{field_name} would escape storage directory: {name}"
-                )
+                raise ValueError(f"{field_name} would escape storage directory: {name}")
         except (ValueError, OSError) as e:
-            raise ValueError(
-                f"{field_name} contains invalid characters: {name}"
-            ) from e
+            raise ValueError(f"{field_name} contains invalid characters: {name}") from e
 
 
 __all__ = ["PathResolver"]

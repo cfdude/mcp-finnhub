@@ -1,231 +1,351 @@
-# mcp-finnhub Current Sprint
+# Sprint 3 - Core Tools (Mandatory) - 90 SP
 
-## Sprint 2 - API Client & Job Management (85 SP)
-**Status:** 🔄 IN PROGRESS (0/85 SP complete)  
-**Target Velocity:** 70-90 SP  
-**Goal:** Build HTTP client for Finnhub API with rate limiting, retry logic, and background job management
+**Goal:** Implement the 3 mandatory MCP tools with comprehensive endpoint coverage, following mcp-fred patterns
 
----
-
-## Stories
-
-### Story 2.1 (20 SP): Implement FinnhubClient with httpx
-**Status:** 📋 NOT STARTED  
-**Priority:** HIGH  
-**File:** `src/mcp_finnhub/api/client.py`
-
-**Tasks:**
-- [ ] Import httpx, asyncio, time for async HTTP client
-- [ ] Create FinnhubClient class with __init__(api_key, base_url, config)
-- [ ] Implement async __aenter__ and __aexit__ for context manager
-- [ ] Implement rate limiting using token bucket algorithm
-  - [ ] Track requests per minute based on config.rate_limit_rpm
-  - [ ] Add _rate_limiter() method with async sleep
-  - [ ] Maintain request timestamps in deque
-- [ ] Implement retry logic with exponential backoff
-  - [ ] Use config.max_retries, retry_backoff_factor, retry_jitter
-  - [ ] Retry on 429 (rate limit), 500-504 (server errors)
-  - [ ] Don't retry on 401 (auth), 400 (bad request), 404 (not found)
-- [ ] Implement _request() method with rate limiting + retry
-- [ ] Implement get() method for API requests
-- [ ] Add request/response logging
-- [ ] Add comprehensive docstrings with examples
-
-**Acceptance Criteria:**
-- FinnhubClient works as async context manager
-- Rate limiting prevents exceeding config.rate_limit_rpm
-- Retry logic handles transient errors
-- All HTTP methods properly handle auth headers
-- Type hints complete
+**Sprint Duration:** 1 sprint  
+**Velocity Target:** 90 SP  
+**Quality Standards:** 
+- Zero linting errors/warnings
+- 90%+ test coverage for tools
+- All tests passing before completion
+- Follow mcp-fred ServerContext patterns
 
 ---
 
-### Story 2.2 (15 SP): Implement FinnhubAPIError and error handling
-**Status:** 📋 NOT STARTED  
-**Priority:** HIGH  
-**File:** `src/mcp_finnhub/api/errors.py` (new file)
+## Story 3.1 (30 SP): Implement finnhub_technical_analysis Tool
 
-**Tasks:**
-- [ ] Create FinnhubAPIError exception class extending Exception
-- [ ] Add attributes: status_code, message, response_data, request_url
-- [ ] Add __init__ method with all error details
-- [ ] Add __str__ method for readable error messages
-- [ ] Create error handler function: handle_api_error(response)
-- [ ] Map status codes to specific error types:
-  - [ ] 401: AuthenticationError
-  - [ ] 403: PermissionError  
-  - [ ] 404: NotFoundError
-  - [ ] 429: RateLimitError
-  - [ ] 500-504: ServerError
-- [ ] Add comprehensive docstrings
-- [ ] Integrate error handling into FinnhubClient._request()
+**Goal:** Create MCP tool for technical analysis with 4 operations covering indicators, signals, patterns, and support/resistance levels
 
-**Acceptance Criteria:**
-- All API errors wrapped in FinnhubAPIError
-- Error messages include status code, URL, response data
-- Type hints complete
-- Proper error inheritance hierarchy
+### Tasks:
 
----
+#### API Endpoint Modules (8 SP)
+- [ ] Create `src/mcp_finnhub/api/endpoints/technical.py`
+  - [ ] `get_indicator(symbol, resolution, from, to, indicator, **params)` → `/indicator`
+  - [ ] `aggregate_signals(symbol, resolution)` → `/scan/technical-indicator`
+  - [ ] `scan_patterns(symbol, resolution)` → `/scan/pattern`
+  - [ ] `support_resistance(symbol, resolution)` → `/scan/support-resistance`
+  - [ ] All methods async with proper error handling
+  - [ ] Return raw API responses (dict)
 
-### Story 2.3 (15 SP): Create Pydantic response models
-**Status:** 📋 NOT STARTED  
-**Priority:** MEDIUM  
-**File:** `src/mcp_finnhub/api/models/__init__.py` and response models
+#### Pydantic Response Models (8 SP)
+- [ ] Create `src/mcp_finnhub/api/models/technical.py`
+  - [ ] `IndicatorResponse` model (varies by indicator type)
+  - [ ] `TechnicalSignal` model (buy/sell/hold with metadata)
+  - [ ] `PatternRecognition` model (pattern type, confidence, etc.)
+  - [ ] `SupportResistanceLevel` model
+  - [ ] Field validators for all models
+  - [ ] Properties for convenient data access
 
-**Tasks:**
-- [ ] Create BaseResponse model with common fields
-- [ ] Create QuoteResponse model:
-  - [ ] c: float (current price)
-  - [ ] h: float (high)
-  - [ ] l: float (low)
-  - [ ] o: float (open)
-  - [ ] pc: float (previous close)
-  - [ ] t: int (timestamp)
-- [ ] Create CandleResponse model:
-  - [ ] c: list[float] (close prices)
-  - [ ] h: list[float] (high prices)
-  - [ ] l: list[float] (low prices)
-  - [ ] o: list[float] (open prices)
-  - [ ] v: list[int] (volumes)
-  - [ ] t: list[int] (timestamps)
-  - [ ] s: str (status: ok/no_data)
-- [ ] Create NewsArticle model for news responses
-- [ ] Create CompanyProfile model
-- [ ] Add field validators where needed
-- [ ] Add comprehensive docstrings
-- [ ] Export all models from __init__.py
+#### MCP Tool Implementation (10 SP)
+- [ ] Create `src/mcp_finnhub/tools/technical_analysis.py`
+  - [ ] Tool registration with `@mcp.tool()` decorator
+  - [ ] `get_indicator` operation with input validation
+  - [ ] `aggregate_signals` operation
+  - [ ] `scan_patterns` operation
+  - [ ] `support_resistance` operation
+  - [ ] Smart output handling (auto/screen/file modes)
+  - [ ] Token estimation integration
+  - [ ] Job creation for large datasets (>10K rows)
+  - [ ] CSV/JSON export support
 
-**Acceptance Criteria:**
-- All response models use Pydantic BaseModel
-- Field types match Finnhub API documentation
-- Validators handle edge cases
-- Type hints complete
+#### Tests (4 SP)
+- [ ] Create `tests/test_api/test_endpoints_technical.py` (unit tests for endpoints)
+- [ ] Create `tests/test_api/test_models_technical.py` (model validation tests)
+- [ ] Create `tests/test_tools/test_technical_analysis.py` (tool integration tests)
+- [ ] Achieve 90%+ coverage
+
+**Definition of Done:**
+- ✅ All 4 operations implemented and working
+- ✅ Pydantic models with 100% validation coverage
+- ✅ 90%+ test coverage
+- ✅ Zero linting errors/warnings
+- ✅ Integration with ServerContext
+- ✅ Smart output handling working
 
 ---
 
-### Story 2.4 (15 SP): Implement JobManager
-**Status:** 📋 NOT STARTED  
-**Priority:** MEDIUM  
-**File:** `src/mcp_finnhub/utils/job_manager.py` (new file)
+## Story 3.2 (30 SP): Implement finnhub_stock_market_data Tool
 
-**Tasks:**
-- [ ] Create Job dataclass with fields:
-  - [ ] job_id: str
-  - [ ] project_name: str
-  - [ ] status: JobStatus (pending/running/completed/failed)
-  - [ ] created_at: datetime
-  - [ ] started_at: datetime | None
-  - [ ] completed_at: datetime | None
-  - [ ] result_path: Path | None
-  - [ ] error: str | None
-- [ ] Create JobStatus enum (pending, running, completed, failed, cancelled)
-- [ ] Create JobManager class with __init__(storage_dir, config)
-- [ ] Implement create_job(project_name, operation) -> Job
-- [ ] Implement update_job(job_id, **updates) -> Job
-- [ ] Implement get_job(job_id) -> Job | None
-- [ ] Implement list_jobs(project_name) -> list[Job]
-- [ ] Implement complete_job(job_id, result_path)
-- [ ] Implement fail_job(job_id, error)
-- [ ] Implement cancel_job(job_id)
-- [ ] Implement cleanup_old_jobs() based on config.job_cleanup_after
-- [ ] Persist job metadata to JSON files
-- [ ] Add comprehensive docstrings
+**Goal:** Create MCP tool for stock market data with 8 operations covering quotes, candles, ticks, and market status
 
-**Acceptance Criteria:**
-- Jobs persisted to disk with JSON metadata
-- Job lifecycle managed correctly (pending→running→completed/failed)
-- Cleanup removes old completed jobs
-- Type hints complete
+### Tasks:
 
----
+#### API Endpoint Modules (8 SP)
+- [ ] Create `src/mcp_finnhub/api/endpoints/market.py`
+  - [ ] `quote(symbol)` → `/quote` (already have model from Sprint 2)
+  - [ ] `candle(symbol, resolution, from, to)` → `/stock/candle` (already have model from Sprint 2)
+  - [ ] `tick(symbol, date, limit, skip)` → `/stock/tick`
+  - [ ] `bbo(symbol)` → `/stock/bbo`
+  - [ ] `bidask(symbol, from, to)` → `/stock/bidask`
+  - [ ] `symbols(exchange, mic, security_type, currency)` → `/stock/symbol`
+  - [ ] `market_status(exchange)` → `/stock/market-status` (already have model from Sprint 2)
+  - [ ] `market_holiday(exchange)` → `/stock/market-holiday`
+  - [ ] All methods async with proper error handling
 
-### Story 2.5 (10 SP): Implement BackgroundWorker
-**Status:** 📋 NOT STARTED  
-**Priority:** MEDIUM  
-**File:** `src/mcp_finnhub/utils/background_worker.py` (new file)
+#### Pydantic Response Models (8 SP)
+- [ ] Update `src/mcp_finnhub/api/models/common.py` or create `market.py`
+  - [ ] Reuse: `QuoteResponse`, `CandleResponse`, `MarketStatusResponse` from Sprint 2
+  - [ ] `TickData` model (time, price, volume, conditions)
+  - [ ] `BBO` model (best bid/offer with exchange info)
+  - [ ] `BidAsk` model (bid/ask spread with timestamps)
+  - [ ] `SymbolInfo` model (from SymbolLookupResult or create new)
+  - [ ] `MarketHoliday` model (date, exchange, name)
+  - [ ] Field validators for all new models
 
-**Tasks:**
-- [ ] Create BackgroundWorker class with __init__(job_manager, max_concurrent)
-- [ ] Implement submit_job(job_id, coro) -> None
-- [ ] Implement _worker() coroutine for processing jobs
-- [ ] Track running jobs count vs max_concurrent_jobs
-- [ ] Implement job timeout based on config.job_timeout
-- [ ] Handle job completion and failures
-- [ ] Update JobManager on job status changes
-- [ ] Add comprehensive docstrings
-- [ ] Implement graceful shutdown
+#### MCP Tool Implementation (10 SP)
+- [ ] Create `src/mcp_finnhub/tools/stock_market_data.py`
+  - [ ] Tool registration with `@mcp.tool()` decorator
+  - [ ] `quote` operation
+  - [ ] `candle` operation with resolution validation
+  - [ ] `tick` operation with pagination support
+  - [ ] `bbo` operation
+  - [ ] `bidask` operation
+  - [ ] `symbols` operation with filtering
+  - [ ] `market_status` operation
+  - [ ] `market_holiday` operation
+  - [ ] Smart output handling for large tick datasets
+  - [ ] Background job support for tick data
 
-**Acceptance Criteria:**
-- Background jobs execute asynchronously
-- Respects max_concurrent_jobs limit
-- Job timeouts enforced
-- JobManager updated with results/errors
-- Type hints complete
+#### Tests (4 SP)
+- [ ] Create `tests/test_api/test_endpoints_market.py`
+- [ ] Create `tests/test_api/test_models_market.py` (or update test_models.py)
+- [ ] Create `tests/test_tools/test_stock_market_data.py`
+- [ ] Achieve 90%+ coverage
+
+**Definition of Done:**
+- ✅ All 8 operations implemented and working
+- ✅ Pydantic models for all endpoints
+- ✅ 90%+ test coverage
+- ✅ Zero linting errors/warnings
+- ✅ Premium endpoint detection (tick, bbo, bidask)
+- ✅ Background job support for tick data
 
 ---
 
-### Story 2.6 (10 SP): Write comprehensive tests
-**Status:** 📋 NOT STARTED  
-**Priority:** HIGH  
-**Files:** `tests/test_api/`, `tests/test_utils/`
+## Story 3.3 (20 SP): Implement finnhub_news_sentiment Tool
 
-**Tasks:**
-- [ ] Create tests/test_api/test_client.py:
-  - [ ] Test FinnhubClient initialization
-  - [ ] Test rate limiting prevents exceeding limit
-  - [ ] Test retry logic on 429, 500-504
-  - [ ] Test no retry on 401, 400, 404
-  - [ ] Test successful requests
-  - [ ] Test context manager usage
-- [ ] Create tests/test_api/test_errors.py:
-  - [ ] Test FinnhubAPIError creation
-  - [ ] Test error message formatting
-  - [ ] Test handle_api_error() for all status codes
-- [ ] Create tests/test_api/test_models.py:
-  - [ ] Test QuoteResponse parsing
-  - [ ] Test CandleResponse parsing
-  - [ ] Test field validation
-- [ ] Create tests/test_utils/test_job_manager.py:
-  - [ ] Test job creation, update, retrieval
-  - [ ] Test job lifecycle (pending→completed)
-  - [ ] Test job cleanup
-  - [ ] Test persistence to disk
-- [ ] Create tests/test_utils/test_background_worker.py:
-  - [ ] Test job submission and execution
-  - [ ] Test concurrent job limits
-  - [ ] Test job timeouts
-- [ ] Run pytest with coverage
-- [ ] Achieve 85%+ coverage for Sprint 2 code
+**Goal:** Create MCP tool for news and sentiment with 4 operations
 
-**Acceptance Criteria:**
-- All tests pass
-- Coverage >= 85% for API client and job system
-- Tests use respx for HTTP mocking
-- Tests use tmp_path for file operations
-- Happy path and edge cases covered
+### Tasks:
+
+#### API Endpoint Modules (6 SP)
+- [ ] Create `src/mcp_finnhub/api/endpoints/news.py`
+  - [ ] `market_news(category, min_id)` → `/news`
+  - [ ] `company_news(symbol, from, to)` → `/company-news` (already have NewsArticle model from Sprint 2)
+  - [ ] `press_releases(symbol, from, to)` → `/press-releases`
+  - [ ] `sentiment(symbol)` → `/news-sentiment`
+  - [ ] All methods async with proper error handling
+
+#### Pydantic Response Models (5 SP)
+- [ ] Update `src/mcp_finnhub/api/models/common.py` or create `news.py`
+  - [ ] Reuse: `NewsArticle` model from Sprint 2
+  - [ ] `PressRelease` model (similar to NewsArticle)
+  - [ ] `SentimentScore` model (articlesInLastWeek, buzz, sentiment, companyNewsScore, sectorAverageBullishPercent, etc.)
+  - [ ] Field validators for sentiment ranges
+
+#### MCP Tool Implementation (7 SP)
+- [ ] Create `src/mcp_finnhub/tools/news_sentiment.py`
+  - [ ] Tool registration with `@mcp.tool()` decorator
+  - [ ] `market_news` operation with category filter
+  - [ ] `company_news` operation with date range
+  - [ ] `press_releases` operation
+  - [ ] `sentiment` operation with score interpretation
+  - [ ] Smart output handling
+  - [ ] CSV export for news articles
+
+#### Tests (2 SP)
+- [ ] Create `tests/test_api/test_endpoints_news.py`
+- [ ] Create `tests/test_api/test_models_news.py` (or update test_models.py)
+- [ ] Create `tests/test_tools/test_news_sentiment.py`
+- [ ] Achieve 90%+ coverage
+
+**Definition of Done:**
+- ✅ All 4 operations implemented and working
+- ✅ Pydantic models for all endpoints
+- ✅ 90%+ test coverage
+- ✅ Zero linting errors/warnings
+- ✅ Sentiment score interpretation helpers
+- ✅ CSV export working
 
 ---
 
-## Sprint Goals
-1. ✅ Complete async HTTP client with rate limiting and retry
-2. ✅ Implement comprehensive error handling
-3. ✅ Create Pydantic models for API responses
-4. ✅ Build background job management system
-5. ✅ Achieve 85%+ test coverage
+## Story 3.4 (10 SP): Write Comprehensive Tests for All 3 Tools
 
-## Definition of Done
-- [ ] All 6 stories completed
-- [ ] All tests passing
-- [ ] Coverage >= 85% for Sprint 2 code
-- [ ] Code formatted with ruff
-- [ ] Pre-commit hooks passing
-- [ ] Git commits following conventional format
-- [ ] Progress memory updated
-- [ ] Ready for Sprint 3 (Core Tools)
+**Goal:** Create integration tests and achieve 90%+ coverage across all Sprint 3 code
 
-## Notes
-- FinnhubClient will be used by all tools for API access
-- JobManager will handle large dataset operations
-- Focus on reliability and error handling
-- Follow mcp-fred patterns for async client and rate limiting
+### Tasks:
+
+#### Integration Tests (5 SP)
+- [ ] Create `tests/test_integration/test_sprint3_integration.py`
+  - [ ] Test technical_analysis tool with FinnhubClient integration
+  - [ ] Test stock_market_data tool with job system integration
+  - [ ] Test news_sentiment tool with output handling
+  - [ ] Test all tools with ServerContext (when available)
+  - [ ] Test error handling across all tools
+  - [ ] Test background jobs for large datasets
+  - [ ] Test CSV/JSON export for all tools
+
+#### End-to-End Workflows (3 SP)
+- [ ] Test complete workflow: API request → parse model → tool output → CSV export
+- [ ] Test job creation for large datasets
+- [ ] Test token estimation for all operations
+- [ ] Test premium vs free endpoint behavior
+
+#### Coverage & Quality (2 SP)
+- [ ] Run coverage report for all Sprint 3 code
+- [ ] Ensure 90%+ coverage for:
+  - [ ] `src/mcp_finnhub/api/endpoints/technical.py`
+  - [ ] `src/mcp_finnhub/api/endpoints/market.py`
+  - [ ] `src/mcp_finnhub/api/endpoints/news.py`
+  - [ ] `src/mcp_finnhub/api/models/technical.py`
+  - [ ] `src/mcp_finnhub/api/models/market.py` (or common.py updates)
+  - [ ] `src/mcp_finnhub/api/models/news.py` (or common.py updates)
+  - [ ] `src/mcp_finnhub/tools/technical_analysis.py`
+  - [ ] `src/mcp_finnhub/tools/stock_market_data.py`
+  - [ ] `src/mcp_finnhub/tools/news_sentiment.py`
+- [ ] Fix all linting errors/warnings
+- [ ] Format all code with ruff
+
+**Definition of Done:**
+- ✅ All integration tests passing
+- ✅ 90%+ test coverage for Sprint 3 code
+- ✅ Zero linting errors/warnings
+- ✅ All edge cases covered
+- ✅ Premium endpoint behavior tested
+
+---
+
+## Sprint 3 Success Criteria
+
+### Functional Requirements
+- ✅ 3 mandatory MCP tools fully implemented (16 total operations)
+- ✅ All tools integrated with FinnhubClient
+- ✅ Smart output handling (auto/screen/file modes)
+- ✅ Background job support for large datasets
+- ✅ CSV/JSON export working
+
+### Quality Requirements
+- ✅ 90%+ test coverage for all Sprint 3 code
+- ✅ Zero linting errors/warnings
+- ✅ All tests passing (unit + integration + end-to-end)
+- ✅ Code formatted with ruff
+
+### Technical Requirements
+- ✅ Follow mcp-fred ServerContext patterns
+- ✅ Pydantic models for all API responses
+- ✅ Async/await throughout
+- ✅ Comprehensive error handling
+- ✅ Token estimation integration
+- ✅ Job manager integration for large datasets
+
+---
+
+## Implementation Notes
+
+### Tool Patterns to Follow (from mcp-fred)
+
+1. **Tool Registration:**
+```python
+@mcp.tool()
+async def finnhub_technical_analysis(
+    operation: str,
+    symbol: str,
+    resolution: str = "D",
+    # ... operation-specific params
+) -> dict:
+    """Technical analysis with 4 operations."""
+    # Validate inputs
+    # Route to operation handler
+    # Return formatted response
+```
+
+2. **Operation Routing:**
+```python
+operations = {
+    "get_indicator": _get_indicator,
+    "aggregate_signals": _aggregate_signals,
+    "scan_patterns": _scan_patterns,
+    "support_resistance": _support_resistance,
+}
+handler = operations.get(operation)
+if not handler:
+    raise ValueError(f"Unknown operation: {operation}")
+return await handler(symbol, resolution, **kwargs)
+```
+
+3. **Smart Output Handling:**
+```python
+# Estimate tokens
+estimated_tokens = token_estimator.estimate(data)
+
+# Choose output mode
+if estimated_tokens > safe_limit:
+    # Create background job
+    job = job_manager.create_job("technical_analysis", params)
+    return {"job_id": job.job_id, "status": "pending"}
+elif output_mode == "file":
+    # Write to file
+    file_path = file_writer.write_csv(data, filename)
+    return {"file": str(file_path), "rows": len(data)}
+else:
+    # Return data directly
+    return {"data": data, "rows": len(data)}
+```
+
+4. **Error Handling:**
+```python
+try:
+    response = await client.get_indicator(symbol, indicator, ...)
+    model = IndicatorResponse(**response)
+    return model.model_dump()
+except AuthenticationError:
+    raise ValueError("Invalid API key")
+except RateLimitError:
+    raise ValueError("Rate limit exceeded, try again later")
+except ValidationError as e:
+    raise ValueError(f"Invalid response from API: {e}")
+```
+
+### Testing Patterns
+
+1. **API Endpoint Tests:**
+```python
+@respx.mock
+async def test_get_indicator_success(test_config):
+    respx.get("https://finnhub.io/api/v1/indicator").mock(
+        return_value=httpx.Response(200, json={...})
+    )
+    async with FinnhubClient(test_config) as client:
+        result = await client.get_indicator("AAPL", "sma", ...)
+    assert result["symbol"] == "AAPL"
+```
+
+2. **Model Validation Tests:**
+```python
+def test_indicator_response_validation():
+    data = {"symbol": "AAPL", "indicator": "sma", ...}
+    model = IndicatorResponse(**data)
+    assert model.symbol == "AAPL"
+```
+
+3. **Tool Integration Tests:**
+```python
+async def test_technical_analysis_tool(job_manager, worker):
+    # Test full workflow with background jobs
+    result = await finnhub_technical_analysis(
+        operation="get_indicator",
+        symbol="AAPL",
+        indicator="rsi",
+    )
+    assert "data" in result or "job_id" in result
+```
+
+---
+
+## Current Status
+
+**Sprint:** 3 - Core Tools (Mandatory)  
+**Story Points:** 0/90 complete  
+**Status:** Planning complete, ready to start Story 3.1
+
+**Next Action:** Implement Story 3.1 - finnhub_technical_analysis tool (30 SP)
