@@ -1,0 +1,76 @@
+repos:
+  # Ruff for linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.8
+    hooks:
+      # Run linter with auto-fix
+      - id: ruff
+        args: [--fix]
+        name: Ruff Linter
+        description: Fast Python linter (Flake8, isort, pyupgrade, etc.)
+
+      # Run formatter
+      - id: ruff-format
+        name: Ruff Formatter
+        description: Fast Python formatter (Black-compatible)
+
+  # Pre-commit hooks for file validation
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # File formatting
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        description: Remove trailing whitespace from files
+
+      - id: end-of-file-fixer
+        name: Fix End of Files
+        description: Ensure files end with a newline
+
+      # File validation
+      - id: check-yaml
+        name: Check YAML
+        description: Validate YAML file syntax
+
+      - id: check-json
+        name: Check JSON
+        description: Validate JSON file syntax
+
+      - id: check-toml
+        name: Check TOML
+        description: Validate TOML file syntax (pyproject.toml)
+
+      - id: check-added-large-files
+        name: Check for Large Files
+        description: Prevent committing large files (>500KB)
+        args: [--maxkb=500]
+
+      - id: check-merge-conflict
+        name: Check for Merge Conflicts
+        description: Detect merge conflict markers
+
+      - id: check-case-conflict
+        name: Check Case Conflicts
+        description: Detect case-conflicting filenames
+
+      - id: mixed-line-ending
+        name: Check Line Endings
+        description: Ensure consistent line endings
+
+  # Local hooks for project-specific checks
+  - repo: local
+    hooks:
+      # Run pytest with coverage check
+      - id: pytest
+        name: PyTest
+        description: Run tests with 80% minimum coverage
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+        verbose: true
+        # Fails if:
+        # - Any test fails
+        # - Coverage below 80%
+        # - Test discovery fails
