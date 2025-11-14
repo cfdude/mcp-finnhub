@@ -44,7 +44,7 @@ class QuoteResponse(BaseModel):
     d: float = Field(description="Change")
     dp: float = Field(description="Percent change")
     h: float = Field(description="High price of the day")
-    l: float = Field(description="Low price of the day")
+    l: float = Field(description="Low price of the day")  # noqa: E741
     o: float = Field(description="Open price of the day")
     pc: float = Field(description="Previous close price")
     t: int = Field(description="Timestamp (Unix seconds)")
@@ -78,7 +78,7 @@ class CandleResponse(BaseModel):
 
     c: list[float] = Field(description="Close prices")
     h: list[float] = Field(description="High prices")
-    l: list[float] = Field(description="Low prices")
+    l: list[float] = Field(description="Low prices")  # noqa: E741
     o: list[float] = Field(description="Open prices")
     s: str = Field(description="Status (ok or no_data)")
     t: list[int] = Field(description="Timestamps (Unix seconds)")
@@ -190,14 +190,14 @@ class CompanyProfile(BaseModel):
     currency: str = Field(description="Currency code (e.g., USD)")
     exchange: str = Field(description="Stock exchange")
     ipo: str = Field(description="IPO date (YYYY-MM-DD)")
-    marketCapitalization: float = Field(description="Market cap in millions")
+    marketCapitalization: float = Field(description="Market cap in millions")  # noqa: N815
     name: str = Field(description="Company name")
     phone: str = Field(description="Phone number")
-    shareOutstanding: float = Field(description="Outstanding shares in millions")
+    shareOutstanding: float = Field(description="Outstanding shares in millions")  # noqa: N815
     ticker: str = Field(description="Stock ticker symbol")
     weburl: str = Field(description="Company website")
     logo: str = Field(description="Logo URL")
-    finnhubIndustry: str = Field(description="Industry classification")
+    finnhubIndustry: str = Field(description="Industry classification")  # noqa: N815
 
     @field_validator("ipo")
     @classmethod
@@ -230,7 +230,7 @@ class SymbolLookupResult(BaseModel):
     """
 
     description: str = Field(description="Company/security name")
-    displaySymbol: str = Field(description="Display symbol with exchange")
+    displaySymbol: str = Field(description="Display symbol with exchange")  # noqa: N815
     symbol: str = Field(description="API symbol")
     type: str = Field(description="Security type")
 
@@ -249,7 +249,7 @@ class MarketStatusResponse(BaseModel):
 
     exchange: str = Field(description="Exchange name")
     holiday: str | None = Field(default=None, description="Holiday name if closed")
-    isOpen: bool = Field(description="Whether market is open")
+    isOpen: bool = Field(description="Whether market is open")  # noqa: N815
     session: str = Field(description="Trading session")
     timezone: str = Field(description="Exchange timezone")
     t: int = Field(description="Current timestamp (Unix seconds)")

@@ -117,7 +117,7 @@ class TestCandleResponse:
             "t": [1609459200],
             "v": [1000000],
         }
-        with pytest.raises(ValidationError, match="ok.*no_data"):
+        with pytest.raises(ValidationError, match=r"ok.*no_data"):
             CandleResponse(**data)
 
     def test_mismatched_array_lengths(self):

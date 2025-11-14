@@ -6,9 +6,10 @@ for debugging and error recovery strategies.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import httpx
+if TYPE_CHECKING:
+    import httpx
 
 
 class FinnhubAPIError(Exception):

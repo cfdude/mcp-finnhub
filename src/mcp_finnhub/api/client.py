@@ -11,13 +11,16 @@ import logging
 import random
 import time
 from collections import deque
-from collections.abc import Mapping
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import httpx
 
 from mcp_finnhub.api.errors import handle_api_error
-from mcp_finnhub.config import AppConfig
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from mcp_finnhub.config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -189,9 +192,7 @@ class FinnhubClient:
                     return response.json()
                 except ValueError as exc:
                     logger.error(f"Invalid JSON from Finnhub: {response.text[:200]}")
-                    raise ValueError(
-                        f"Finnhub API returned malformed JSON for {path}"
-                    ) from exc
+                    raise ValueError(f"Finnhub API returned malformed JSON for {path}") from exc
 
             except httpx.HTTPStatusError as exc:
                 status_code = exc.response.status_code
@@ -208,14 +209,12 @@ class FinnhubClient:
                     last_exception = exc
 
                     if attempt > self.config.max_retries:
-                        logger.error(
-                            f"Max retries ({self.config.max_retries}) exceeded for {path}"
-                        )
+                        logger.error(f"Max retries ({self.config.max_retries}) exceeded for {path}")
                         # Convert to FinnhubAPIError after max retries
                         raise handle_api_error(exc.response) from exc
 
                     # Calculate exponential backoff with jitter
-                    backoff = self.config.retry_backoff_factor ** attempt
+                    backoff = self.config.retry_backoff_factor**attempt
                     jitter = random.uniform(0, self.config.retry_jitter * backoff)
                     sleep_time = backoff + jitter
 
@@ -238,7 +237,7 @@ class FinnhubClient:
                     logger.error(f"Max retries exceeded for {path} due to network error")
                     raise
 
-                backoff = self.config.retry_backoff_factor ** attempt
+                backoff = self.config.retry_backoff_factor**attempt
                 jitter = random.uniform(0, self.config.retry_jitter * backoff)
                 sleep_time = backoff + jitter
 

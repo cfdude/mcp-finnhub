@@ -9,10 +9,12 @@ import json
 import logging
 import uuid
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from mcp_finnhub.jobs.models import Job, JobStatus
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -167,9 +169,11 @@ class JobManager:
             job.status = status
             if status == JobStatus.RUNNING and not job.started_at:
                 job.started_at = datetime.utcnow()
-            elif status in {JobStatus.COMPLETED, JobStatus.FAILED, JobStatus.CANCELLED}:
-                if not job.completed_at:
-                    job.completed_at = datetime.utcnow()
+            elif (
+                status in {JobStatus.COMPLETED, JobStatus.FAILED, JobStatus.CANCELLED}
+                and not job.completed_at
+            ):
+                job.completed_at = datetime.utcnow()
 
         if progress is not None:
             job.progress = max(0, min(100, progress))
@@ -338,9 +342,13 @@ class JobManager:
         deleted = 0
 
         for job in self.list_jobs():
-            if job.is_terminal and job.completed_at is not None and job.completed_at < cutoff:
-                if self.delete_job(job.job_id):
-                    deleted += 1
+            if (
+                job.is_terminal
+                and job.completed_at is not None
+                and job.completed_at < cutoff
+                and self.delete_job(job.job_id)
+            ):
+                deleted += 1
 
         if deleted > 0:
             logger.info(f"Cleaned up {deleted} old jobs")

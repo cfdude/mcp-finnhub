@@ -341,7 +341,7 @@ class TestEndToEndIntegration:
         worker.register_tool("quick_task", quick_task)
 
         # Create and complete multiple jobs
-        for i in range(5):
+        for _ in range(5):
             job = job_manager.create_job("quick_task", {})
             task = await worker.submit_job(job.job_id)
             await task

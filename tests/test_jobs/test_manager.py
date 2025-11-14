@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from mcp_finnhub.jobs.manager import JobManager
 from mcp_finnhub.jobs.models import JobStatus
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @pytest.fixture

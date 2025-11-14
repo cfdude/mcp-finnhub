@@ -5,7 +5,7 @@ Tests HTTP client with rate limiting, retry logic, and error handling.
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import httpx
 import pytest
@@ -18,6 +18,9 @@ from mcp_finnhub.api.errors import (
     ServerError,
 )
 from mcp_finnhub.config import AppConfig
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @pytest.fixture
