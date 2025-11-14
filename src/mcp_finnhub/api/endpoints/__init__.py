@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from mcp_finnhub.api.endpoints import technical
+from mcp_finnhub.api.endpoints import market, technical
 
-__all__ = ["technical"]
+__all__ = ["market", "technical"]

@@ -9,6 +9,14 @@ from mcp_finnhub.api.models.common import (
     Resolution,
     SymbolLookupResult,
 )
+from mcp_finnhub.api.models.market import (
+    EarningsData,
+    EarningsResponse,
+    FinancialMetric,
+    FinancialReport,
+    FinancialsResponse,
+    SymbolSearchResponse,
+)
 from mcp_finnhub.api.models.technical import (
     AggregateSignalsResponse,
     IndicatorResponse,
@@ -31,6 +39,13 @@ __all__ = [
     "QuoteResponse",
     "Resolution",
     "SymbolLookupResult",
+    # Market data models
+    "EarningsData",
+    "EarningsResponse",
+    "FinancialMetric",
+    "FinancialReport",
+    "FinancialsResponse",
+    "SymbolSearchResponse",
     # Technical analysis models
     "AggregateSignalsResponse",
     "IndicatorResponse",
