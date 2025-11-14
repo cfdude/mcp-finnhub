@@ -265,11 +265,11 @@ class MarketStatusResponse(BaseModel):
 
 
 __all__ = [
-    "Resolution",
-    "QuoteResponse",
     "CandleResponse",
-    "NewsArticle",
     "CompanyProfile",
-    "SymbolLookupResult",
     "MarketStatusResponse",
+    "NewsArticle",
+    "QuoteResponse",
+    "Resolution",
+    "SymbolLookupResult",
 ]

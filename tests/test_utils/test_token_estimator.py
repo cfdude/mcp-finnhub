@@ -5,8 +5,6 @@ Tests token counting, JSON estimation, truncation, and batch operations.
 
 from __future__ import annotations
 
-import pytest
-
 from mcp_finnhub.utils.token_estimator import TokenEstimator
 
 

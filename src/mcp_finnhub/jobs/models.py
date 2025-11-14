@@ -103,4 +103,4 @@ class Job(BaseModel):
             self.message = message
 
 
-__all__ = ["JobStatus", "Job"]
+__all__ = ["Job", "JobStatus"]

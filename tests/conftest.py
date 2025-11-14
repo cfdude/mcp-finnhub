@@ -5,7 +5,6 @@ TODO: Implement fixtures in Sprint 1.2+
 
 from __future__ import annotations
 
-import pytest
 
 
 # Placeholder for test fixtures

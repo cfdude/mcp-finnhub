@@ -229,7 +229,7 @@ class FinnhubClient:
                 # Other HTTP errors - raise with context
                 raise handle_api_error(exc.response) from exc
 
-            except (httpx.RequestError, asyncio.TimeoutError) as exc:
+            except (TimeoutError, httpx.RequestError) as exc:
                 # Network errors - retry
                 attempt += 1
                 last_exception = exc

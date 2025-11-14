@@ -15,7 +15,6 @@ from mcp_finnhub.api.client import FinnhubClient
 from mcp_finnhub.api.errors import (
     AuthenticationError,
     NotFoundError,
-    RateLimitError,
     ServerError,
 )
 from mcp_finnhub.config import AppConfig

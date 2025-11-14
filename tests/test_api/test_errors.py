@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import httpx
-import pytest
 
 from mcp_finnhub.api.errors import (
     AuthenticationError,

@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
-import pytest
-
 from mcp_finnhub.jobs.models import Job, JobStatus
 
 

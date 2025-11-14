@@ -212,10 +212,10 @@ def handle_api_error(response: httpx.Response) -> FinnhubAPIError:
 
 
 __all__ = [
-    "FinnhubAPIError",
     "AuthenticationError",
-    "PermissionError",
+    "FinnhubAPIError",
     "NotFoundError",
+    "PermissionError",
     "RateLimitError",
     "ServerError",
     "ValidationError",

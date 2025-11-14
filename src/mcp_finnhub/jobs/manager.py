@@ -87,6 +87,17 @@ class JobManager:
                 temp_file.unlink()
             raise
 
+    def save_job(self, job: Job) -> None:
+        """Save a job object to disk.
+
+        This is useful when you've modified a job object in-place
+        (e.g., via mark_running(), mark_completed()) and want to persist it.
+
+        Args:
+            job: Job object to save
+        """
+        self._save_job(job)
+
     def create_job(
         self,
         tool_name: str,
@@ -327,11 +338,7 @@ class JobManager:
         deleted = 0
 
         for job in self.list_jobs():
-            if (
-                job.is_terminal
-                and job.completed_at is not None
-                and job.completed_at < cutoff
-            ):
+            if job.is_terminal and job.completed_at is not None and job.completed_at < cutoff:
                 if self.delete_job(job.job_id):
                     deleted += 1
 
