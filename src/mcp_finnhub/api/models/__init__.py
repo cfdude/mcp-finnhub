@@ -9,8 +9,21 @@ from mcp_finnhub.api.models.common import (
     Resolution,
     SymbolLookupResult,
 )
+from mcp_finnhub.api.models.technical import (
+    AggregateSignalsResponse,
+    IndicatorResponse,
+    IndicatorValue,
+    Pattern,
+    PatternRecognitionResponse,
+    SignalCount,
+    SupportResistanceLevel,
+    SupportResistanceResponse,
+    TechnicalAnalysis,
+    TrendInfo,
+)
 
 __all__ = [
+    # Common models
     "CandleResponse",
     "CompanyProfile",
     "MarketStatusResponse",
@@ -18,4 +31,15 @@ __all__ = [
     "QuoteResponse",
     "Resolution",
     "SymbolLookupResult",
+    # Technical analysis models
+    "AggregateSignalsResponse",
+    "IndicatorResponse",
+    "IndicatorValue",
+    "Pattern",
+    "PatternRecognitionResponse",
+    "SignalCount",
+    "SupportResistanceLevel",
+    "SupportResistanceResponse",
+    "TechnicalAnalysis",
+    "TrendInfo",
 ]
