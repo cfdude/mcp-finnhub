@@ -143,6 +143,13 @@ class AppConfig(BaseModel):
         description="Rate limit in requests per minute (30 free, 300 premium)",
     )
     request_timeout: int = Field(default=30, ge=1, description="Request timeout in seconds")
+    max_retries: int = Field(default=3, ge=0, description="Maximum number of retry attempts")
+    retry_backoff_factor: float = Field(
+        default=1.5, ge=1.0, description="Exponential backoff factor for retries"
+    )
+    retry_jitter: float = Field(
+        default=0.25, ge=0.0, le=1.0, description="Fractional jitter for retry backoff"
+    )
     enable_cache: bool = Field(default=True, description="Enable request caching")
     cache_ttl: int = Field(default=300, ge=1, description="Cache TTL in seconds")
 
