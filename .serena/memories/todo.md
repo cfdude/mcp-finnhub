@@ -1,193 +1,231 @@
-# mcp-finnhub - Current Sprint TODO
+# mcp-finnhub Current Sprint
 
-**Sprint:** 1.1 - Project Scaffold & Configuration  
-**Story Points:** 30 SP  
-**Phase:** 1 - Foundation & Core Infrastructure  
-**Status:** Ready to start
-
----
-
-## Sprint Goal
-Establish complete project structure with pyproject.toml, dependencies, .env.example, and pre-commit hooks.
+## Sprint 2 - API Client & Job Management (85 SP)
+**Status:** 🔄 IN PROGRESS (0/85 SP complete)  
+**Target Velocity:** 70-90 SP  
+**Goal:** Build HTTP client for Finnhub API with rate limiting, retry logic, and background job management
 
 ---
 
 ## Stories
 
-### ✅ Story 1.1.1 (8 SP): Create complete project structure
-**Status:** Not Started  
+### Story 2.1 (20 SP): Implement FinnhubClient with httpx
+**Status:** 📋 NOT STARTED  
+**Priority:** HIGH  
+**File:** `src/mcp_finnhub/api/client.py`
+
 **Tasks:**
-- [ ] Create src/mcp_finnhub/ directory structure
-  - [ ] __init__.py
-  - [ ] __main__.py
-  - [ ] config.py (placeholder)
-  - [ ] server.py (placeholder)
-- [ ] Create api/ subdirectory
-  - [ ] __init__.py
-  - [ ] client.py (placeholder)
-  - [ ] endpoints/__init__.py (placeholder)
-  - [ ] models/__init__.py (placeholder)
-- [ ] Create tools/ subdirectory
-  - [ ] __init__.py
-  - [ ] _common.py (placeholder)
-- [ ] Create utils/ subdirectory
-  - [ ] __init__.py
-- [ ] Create transports/ subdirectory
-  - [ ] __init__.py
-  - [ ] stdio.py (placeholder)
-- [ ] Create tests/ directory structure
-  - [ ] conftest.py
-  - [ ] test_api/
-  - [ ] test_tools/
-  - [ ] test_utils/
-- [ ] Verify structure matches mcp-fred pattern
+- [ ] Import httpx, asyncio, time for async HTTP client
+- [ ] Create FinnhubClient class with __init__(api_key, base_url, config)
+- [ ] Implement async __aenter__ and __aexit__ for context manager
+- [ ] Implement rate limiting using token bucket algorithm
+  - [ ] Track requests per minute based on config.rate_limit_rpm
+  - [ ] Add _rate_limiter() method with async sleep
+  - [ ] Maintain request timestamps in deque
+- [ ] Implement retry logic with exponential backoff
+  - [ ] Use config.max_retries, retry_backoff_factor, retry_jitter
+  - [ ] Retry on 429 (rate limit), 500-504 (server errors)
+  - [ ] Don't retry on 401 (auth), 400 (bad request), 404 (not found)
+- [ ] Implement _request() method with rate limiting + retry
+- [ ] Implement get() method for API requests
+- [ ] Add request/response logging
+- [ ] Add comprehensive docstrings with examples
 
-**Definition of Done:**
-- All directories and __init__.py files created
-- Structure matches ARCHITECTURE.md
-- Placeholders for key modules in place
+**Acceptance Criteria:**
+- FinnhubClient works as async context manager
+- Rate limiting prevents exceeding config.rate_limit_rpm
+- Retry logic handles transient errors
+- All HTTP methods properly handle auth headers
+- Type hints complete
 
 ---
 
-### ✅ Story 1.1.2 (8 SP): Setup pyproject.toml with all dependencies
-**Status:** Not Started  
+### Story 2.2 (15 SP): Implement FinnhubAPIError and error handling
+**Status:** 📋 NOT STARTED  
+**Priority:** HIGH  
+**File:** `src/mcp_finnhub/api/errors.py` (new file)
+
 **Tasks:**
-- [ ] Create pyproject.toml based on mcp-fred pattern
-- [ ] Add project metadata (name, version, description, authors)
-- [ ] Add core dependencies:
-  - [ ] httpx (async HTTP client)
-  - [ ] pydantic (validation)
-  - [ ] python-dotenv (env loading)
-  - [ ] tiktoken (token estimation)
-  - [ ] mcp SDK
-- [ ] Add dev dependencies:
-  - [ ] ruff (linting + formatting)
-  - [ ] pytest (testing)
-  - [ ] pytest-asyncio (async tests)
-  - [ ] pytest-cov (coverage)
-  - [ ] respx (HTTP mocking)
-- [ ] Configure [tool.ruff] section
-- [ ] Configure [tool.pytest.ini_options] section
-- [ ] Configure [tool.coverage.*] sections
-- [ ] Add project.scripts entry point
+- [ ] Create FinnhubAPIError exception class extending Exception
+- [ ] Add attributes: status_code, message, response_data, request_url
+- [ ] Add __init__ method with all error details
+- [ ] Add __str__ method for readable error messages
+- [ ] Create error handler function: handle_api_error(response)
+- [ ] Map status codes to specific error types:
+  - [ ] 401: AuthenticationError
+  - [ ] 403: PermissionError  
+  - [ ] 404: NotFoundError
+  - [ ] 429: RateLimitError
+  - [ ] 500-504: ServerError
+- [ ] Add comprehensive docstrings
+- [ ] Integrate error handling into FinnhubClient._request()
 
-**Definition of Done:**
-- pyproject.toml complete and valid
-- All dependencies specified with versions
-- Ruff configuration matches DEVELOPMENT.md
-- PyTest configuration with 80% coverage enforcement
+**Acceptance Criteria:**
+- All API errors wrapped in FinnhubAPIError
+- Error messages include status code, URL, response data
+- Type hints complete
+- Proper error inheritance hierarchy
 
 ---
 
-### ✅ Story 1.1.3 (5 SP): Create .env.example with all configuration variables
-**Status:** Not Started  
+### Story 2.3 (15 SP): Create Pydantic response models
+**Status:** 📋 NOT STARTED  
+**Priority:** MEDIUM  
+**File:** `src/mcp_finnhub/api/models/__init__.py` and response models
+
 **Tasks:**
-- [ ] Create .env.example based on ARCHITECTURE.md
-- [ ] Add REQUIRED section:
-  - [ ] FINNHUB_API_KEY
-- [ ] Add STORAGE section:
-  - [ ] FINNHUB_STORAGE_DIR
-  - [ ] FINNHUB_PROJECT_NAME
-- [ ] Add OUTPUT section:
-  - [ ] FINNHUB_OUTPUT_FORMAT
-  - [ ] FINNHUB_OUTPUT_MODE
-  - [ ] FINNHUB_SAFE_TOKEN_LIMIT
-  - [ ] FINNHUB_ASSUME_CONTEXT_USED
-- [ ] Add JOB section:
-  - [ ] FINNHUB_JOB_RETENTION_HOURS
-  - [ ] FINNHUB_JOB_MIN_ROWS
-- [ ] Add RATE LIMITING section:
-  - [ ] FINNHUB_RATE_LIMIT_PER_MINUTE
-- [ ] Add TOOL ENABLE/DISABLE section (all 18 tools)
-- [ ] Add comments explaining each variable
-- [ ] Add examples and defaults
+- [ ] Create BaseResponse model with common fields
+- [ ] Create QuoteResponse model:
+  - [ ] c: float (current price)
+  - [ ] h: float (high)
+  - [ ] l: float (low)
+  - [ ] o: float (open)
+  - [ ] pc: float (previous close)
+  - [ ] t: int (timestamp)
+- [ ] Create CandleResponse model:
+  - [ ] c: list[float] (close prices)
+  - [ ] h: list[float] (high prices)
+  - [ ] l: list[float] (low prices)
+  - [ ] o: list[float] (open prices)
+  - [ ] v: list[int] (volumes)
+  - [ ] t: list[int] (timestamps)
+  - [ ] s: str (status: ok/no_data)
+- [ ] Create NewsArticle model for news responses
+- [ ] Create CompanyProfile model
+- [ ] Add field validators where needed
+- [ ] Add comprehensive docstrings
+- [ ] Export all models from __init__.py
 
-**Definition of Done:**
-- .env.example complete with all variables
-- Comments explain each variable
-- Matches .mcp.json configuration
-- Includes tool enable/disable flags
+**Acceptance Criteria:**
+- All response models use Pydantic BaseModel
+- Field types match Finnhub API documentation
+- Validators handle edge cases
+- Type hints complete
 
 ---
 
-### ✅ Story 1.1.4 (5 SP): Create .gitignore for Python/venv/IDE files
-**Status:** Not Started  
+### Story 2.4 (15 SP): Implement JobManager
+**Status:** 📋 NOT STARTED  
+**Priority:** MEDIUM  
+**File:** `src/mcp_finnhub/utils/job_manager.py` (new file)
+
 **Tasks:**
-- [ ] Copy .gitignore from mcp-fred as base
-- [ ] Add Python-specific ignores:
-  - [ ] __pycache__/
-  - [ ] *.py[cod]
-  - [ ] *$py.class
-  - [ ] *.so
-  - [ ] .Python
-- [ ] Add virtual environment ignores:
-  - [ ] .venv/
-  - [ ] venv/
-  - [ ] ENV/
-- [ ] Add test/coverage ignores:
-  - [ ] .pytest_cache/
-  - [ ] .coverage
-  - [ ] htmlcov/
-- [ ] Add IDE ignores:
-  - [ ] .vscode/
-  - [ ] .idea/
-  - [ ] *.swp
-- [ ] Add build/dist ignores:
-  - [ ] build/
-  - [ ] dist/
-  - [ ] *.egg-info/
-- [ ] Add Ruff cache:
-  - [ ] .ruff_cache/
-- [ ] Add .env (but not .env.example)
-- [ ] Add local data directory
+- [ ] Create Job dataclass with fields:
+  - [ ] job_id: str
+  - [ ] project_name: str
+  - [ ] status: JobStatus (pending/running/completed/failed)
+  - [ ] created_at: datetime
+  - [ ] started_at: datetime | None
+  - [ ] completed_at: datetime | None
+  - [ ] result_path: Path | None
+  - [ ] error: str | None
+- [ ] Create JobStatus enum (pending, running, completed, failed, cancelled)
+- [ ] Create JobManager class with __init__(storage_dir, config)
+- [ ] Implement create_job(project_name, operation) -> Job
+- [ ] Implement update_job(job_id, **updates) -> Job
+- [ ] Implement get_job(job_id) -> Job | None
+- [ ] Implement list_jobs(project_name) -> list[Job]
+- [ ] Implement complete_job(job_id, result_path)
+- [ ] Implement fail_job(job_id, error)
+- [ ] Implement cancel_job(job_id)
+- [ ] Implement cleanup_old_jobs() based on config.job_cleanup_after
+- [ ] Persist job metadata to JSON files
+- [ ] Add comprehensive docstrings
 
-**Definition of Done:**
-- .gitignore comprehensive
-- No sensitive files tracked
-- IDE and build artifacts ignored
+**Acceptance Criteria:**
+- Jobs persisted to disk with JSON metadata
+- Job lifecycle managed correctly (pending→running→completed/failed)
+- Cleanup removes old completed jobs
+- Type hints complete
 
 ---
 
-### ✅ Story 1.1.5 (4 SP): Setup pre-commit hooks
-**Status:** Not Started  
+### Story 2.5 (10 SP): Implement BackgroundWorker
+**Status:** 📋 NOT STARTED  
+**Priority:** MEDIUM  
+**File:** `src/mcp_finnhub/utils/background_worker.py` (new file)
+
 **Tasks:**
-- [ ] Create .pre-commit-config.yaml
-- [ ] Add Ruff linting hook (with --fix)
-- [ ] Add Ruff formatting hook
-- [ ] Add pre-commit standard hooks:
-  - [ ] trailing-whitespace
-  - [ ] end-of-file-fixer
-  - [ ] check-yaml
-  - [ ] check-json
-  - [ ] check-toml
-  - [ ] check-added-large-files
-- [ ] Add pytest hook (run tests before commit)
-- [ ] Document in DEVELOPMENT.md
-- [ ] Test pre-commit hooks work
+- [ ] Create BackgroundWorker class with __init__(job_manager, max_concurrent)
+- [ ] Implement submit_job(job_id, coro) -> None
+- [ ] Implement _worker() coroutine for processing jobs
+- [ ] Track running jobs count vs max_concurrent_jobs
+- [ ] Implement job timeout based on config.job_timeout
+- [ ] Handle job completion and failures
+- [ ] Update JobManager on job status changes
+- [ ] Add comprehensive docstrings
+- [ ] Implement graceful shutdown
 
-**Definition of Done:**
-- .pre-commit-config.yaml created
-- All hooks configured
-- Hooks run automatically on git commit
-- Matches DEVELOPMENT.md specification
+**Acceptance Criteria:**
+- Background jobs execute asynchronously
+- Respects max_concurrent_jobs limit
+- Job timeouts enforced
+- JobManager updated with results/errors
+- Type hints complete
 
 ---
 
-## Sprint Completion Criteria
+### Story 2.6 (10 SP): Write comprehensive tests
+**Status:** 📋 NOT STARTED  
+**Priority:** HIGH  
+**Files:** `tests/test_api/`, `tests/test_utils/`
 
-- [ ] All 5 stories completed
-- [ ] Project structure matches ARCHITECTURE.md
-- [ ] All configuration files created
-- [ ] Pre-commit hooks installed and working
-- [ ] Git commit with semantic versioning
-- [ ] CHANGELOG.md updated
+**Tasks:**
+- [ ] Create tests/test_api/test_client.py:
+  - [ ] Test FinnhubClient initialization
+  - [ ] Test rate limiting prevents exceeding limit
+  - [ ] Test retry logic on 429, 500-504
+  - [ ] Test no retry on 401, 400, 404
+  - [ ] Test successful requests
+  - [ ] Test context manager usage
+- [ ] Create tests/test_api/test_errors.py:
+  - [ ] Test FinnhubAPIError creation
+  - [ ] Test error message formatting
+  - [ ] Test handle_api_error() for all status codes
+- [ ] Create tests/test_api/test_models.py:
+  - [ ] Test QuoteResponse parsing
+  - [ ] Test CandleResponse parsing
+  - [ ] Test field validation
+- [ ] Create tests/test_utils/test_job_manager.py:
+  - [ ] Test job creation, update, retrieval
+  - [ ] Test job lifecycle (pending→completed)
+  - [ ] Test job cleanup
+  - [ ] Test persistence to disk
+- [ ] Create tests/test_utils/test_background_worker.py:
+  - [ ] Test job submission and execution
+  - [ ] Test concurrent job limits
+  - [ ] Test job timeouts
+- [ ] Run pytest with coverage
+- [ ] Achieve 85%+ coverage for Sprint 2 code
+
+**Acceptance Criteria:**
+- All tests pass
+- Coverage >= 85% for API client and job system
+- Tests use respx for HTTP mocking
+- Tests use tmp_path for file operations
+- Happy path and edge cases covered
 
 ---
 
-## Next Sprint
+## Sprint Goals
+1. ✅ Complete async HTTP client with rate limiting and retry
+2. ✅ Implement comprehensive error handling
+3. ✅ Create Pydantic models for API responses
+4. ✅ Build background job management system
+5. ✅ Achieve 85%+ test coverage
 
-**Sprint 1.2:** Configuration System (30 SP)
-- Implement AppConfig with Pydantic
-- Implement ToolConfig with enable/disable
-- Configuration loading from environment
-- Tests for configuration (80% coverage)
+## Definition of Done
+- [ ] All 6 stories completed
+- [ ] All tests passing
+- [ ] Coverage >= 85% for Sprint 2 code
+- [ ] Code formatted with ruff
+- [ ] Pre-commit hooks passing
+- [ ] Git commits following conventional format
+- [ ] Progress memory updated
+- [ ] Ready for Sprint 3 (Core Tools)
+
+## Notes
+- FinnhubClient will be used by all tools for API access
+- JobManager will handle large dataset operations
+- Focus on reliability and error handling
+- Follow mcp-fred patterns for async client and rate limiting

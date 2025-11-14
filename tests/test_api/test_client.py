@@ -12,6 +12,12 @@ import pytest
 import respx
 
 from mcp_finnhub.api.client import FinnhubClient
+from mcp_finnhub.api.errors import (
+    AuthenticationError,
+    NotFoundError,
+    RateLimitError,
+    ServerError,
+)
 from mcp_finnhub.config import AppConfig
 
 
@@ -104,10 +110,10 @@ class TestFinnhubClient:
         )
 
         async with FinnhubClient(test_config) as client:
-            with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            with pytest.raises(AuthenticationError) as exc_info:
                 await client.get("/quote", params={"symbol": "AAPL"})
 
-        assert exc_info.value.response.status_code == 401
+        assert exc_info.value.status_code == 401
 
     @respx.mock
     async def test_no_retry_on_404(self, test_config: AppConfig):
@@ -117,10 +123,10 @@ class TestFinnhubClient:
         )
 
         async with FinnhubClient(test_config) as client:
-            with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            with pytest.raises(NotFoundError) as exc_info:
                 await client.get("/quote", params={"symbol": "INVALID"})
 
-        assert exc_info.value.response.status_code == 404
+        assert exc_info.value.status_code == 404
 
     @respx.mock
     async def test_max_retries_exceeded(self, test_config: AppConfig):
@@ -129,7 +135,7 @@ class TestFinnhubClient:
         route.mock(return_value=httpx.Response(500, json={"error": "Server error"}))
 
         async with FinnhubClient(test_config) as client:
-            with pytest.raises(httpx.HTTPStatusError):
+            with pytest.raises(ServerError):
                 await client.get("/quote", params={"symbol": "AAPL"})
 
         # Should try initial + 2 retries = 3 total

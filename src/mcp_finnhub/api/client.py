@@ -16,6 +16,7 @@ from typing import Any, ClassVar
 
 import httpx
 
+from mcp_finnhub.api.errors import handle_api_error
 from mcp_finnhub.config import AppConfig
 
 logger = logging.getLogger(__name__)
@@ -198,7 +199,8 @@ class FinnhubClient:
                 # Don't retry on client errors (except 429)
                 if status_code in {400, 401, 403, 404} and status_code != 429:
                     logger.error(f"Non-retryable error {status_code} for {path}")
-                    raise
+                    # Convert to FinnhubAPIError with context
+                    raise handle_api_error(exc.response) from exc
 
                 # Retry on server errors and rate limits
                 if status_code in self.RETRYABLE_STATUS_CODES:
@@ -209,7 +211,8 @@ class FinnhubClient:
                         logger.error(
                             f"Max retries ({self.config.max_retries}) exceeded for {path}"
                         )
-                        raise
+                        # Convert to FinnhubAPIError after max retries
+                        raise handle_api_error(exc.response) from exc
 
                     # Calculate exponential backoff with jitter
                     backoff = self.config.retry_backoff_factor ** attempt
@@ -223,8 +226,8 @@ class FinnhubClient:
                     await asyncio.sleep(sleep_time)
                     continue
 
-                # Other HTTP errors - raise immediately
-                raise
+                # Other HTTP errors - raise with context
+                raise handle_api_error(exc.response) from exc
 
             except (httpx.RequestError, asyncio.TimeoutError) as exc:
                 # Network errors - retry
