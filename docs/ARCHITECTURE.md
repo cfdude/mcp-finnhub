@@ -732,24 +732,75 @@ class FinnhubAPIError(Exception):
 
 ## Testing Strategy
 
-### Unit Tests (80% Coverage Target)
+**See [DEVELOPMENT.md](DEVELOPMENT.md) for complete testing guide.**
 
+### Code Quality Tools
+
+- **Ruff** - Linting + Formatting (replaces Black, Flake8, isort, pyupgrade)
+- **PyTest** - Testing framework with async support
+- **pytest-cov** - Coverage reporting
+- **respx** - HTTP request mocking
+
+### Coverage Requirements
+
+**Minimum: 80% code coverage** - Enforced via pytest-cov
+
+```bash
+# Run tests with coverage
+pytest --cov=mcp_finnhub --cov-fail-under=80
+
+# Generate HTML report
+pytest --cov=mcp_finnhub --cov-report=html
+```
+
+### Test Types
+
+#### Unit Tests (Primary Focus)
 - Tool parameter validation
 - API client error handling
 - Token estimation accuracy
 - File writer operations
 - Job manager state transitions
+- Configuration loading
+- Error handling
 
-### Integration Tests
-
+#### Integration Tests (As Needed)
 - End-to-end tool execution
 - API mocking with actual response structures
 - File output validation
 - Background job completion
 
-### Test Fixtures
+### Test Structure
 
-Mock Finnhub API responses for all endpoints
+```
+tests/
+├── conftest.py              # Shared fixtures
+├── test_api/
+│   ├── test_client.py
+│   └── test_endpoints/
+├── test_tools/
+│   ├── test_technical_analysis.py
+│   ├── test_stock_market_data.py
+│   └── ...
+└── test_utils/
+    ├── test_token_estimator.py
+    └── ...
+```
+
+### Pre-commit Hooks
+
+Automatically run before each commit:
+- Ruff linting (with auto-fix)
+- Ruff formatting
+- PyTest (with 80% coverage check)
+
+### CI/CD
+
+GitHub Actions runs on every push:
+- Ruff checks
+- Full test suite
+- Coverage validation
+- Multi-version Python testing (3.11, 3.12)
 
 ---
 
