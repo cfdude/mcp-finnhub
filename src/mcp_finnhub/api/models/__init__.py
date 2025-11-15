@@ -9,6 +9,16 @@ from mcp_finnhub.api.models.common import (
     Resolution,
     SymbolLookupResult,
 )
+from mcp_finnhub.api.models.estimates import (
+    EarningsEstimateInfo,
+    EarningsEstimates,
+    EbitdaEstimateInfo,
+    EbitdaEstimates,
+    PriceTarget,
+    RecommendationTrend,
+    RevenueEstimateInfo,
+    RevenueEstimates,
+)
 from mcp_finnhub.api.models.fundamentals import (
     BasicFinancials,
     BasicFinancialsResponse,
@@ -63,7 +73,12 @@ __all__ = [
     "DividendData",
     # Market data models
     "EarningsData",
+    # Estimates models
+    "EarningsEstimateInfo",
+    "EarningsEstimates",
     "EarningsResponse",
+    "EbitdaEstimateInfo",
+    "EbitdaEstimates",
     "FinancialMetric",
     "FinancialReport",
     "FinancialsResponse",
@@ -77,12 +92,16 @@ __all__ = [
     "NewsSentimentResponse",
     "Pattern",
     "PatternRecognitionResponse",
+    "PriceTarget",
     "QuoteResponse",
+    "RecommendationTrend",
     "ReportedFinancial",
     "ReportedFinancialsResponse",
     "Resolution",
     "RevenueBreakdownData",
     "RevenueBreakdownResponse",
+    "RevenueEstimateInfo",
+    "RevenueEstimates",
     "RevenueGeography",
     "RevenueProduct",
     "SecFinancialData",

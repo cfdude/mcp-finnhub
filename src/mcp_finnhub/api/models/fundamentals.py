@@ -76,9 +76,7 @@ class BasicFinancialsResponse(BaseModel):
 
     symbol: str = Field(description="Stock symbol")
     metric: BasicFinancials = Field(description="Financial metrics")
-    series: dict[str, Any] | None = Field(
-        default=None, description="Historical series data"
-    )
+    series: dict[str, Any] | None = Field(default=None, description="Historical series data")
 
 
 class ReportedFinancial(BaseModel):
@@ -141,9 +139,7 @@ class SecFinancialData(BaseModel):
     endDate: str = Field(description="Period end date")  # noqa: N815
     filedDate: str = Field(description="Filing date")  # noqa: N815
     acceptedDate: str = Field(description="Acceptance date")  # noqa: N815
-    report: dict[str, Any] = Field(
-        description="Standardized financial data"
-    )
+    report: dict[str, Any] = Field(description="Standardized financial data")
 
 
 class SecFinancialsResponse(BaseModel):
