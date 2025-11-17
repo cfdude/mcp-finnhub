@@ -48,6 +48,18 @@ from mcp_finnhub.api.models.news import (
     SentimentBuzz,
     SentimentScore,
 )
+from mcp_finnhub.api.models.ownership import (
+    CongressionalTrade,
+    CongressionalTrading,
+    InsiderTransactionData,
+    InsiderTransactions,
+    InstitutionalOwnership,
+    InstitutionalOwnershipData,
+    InstitutionalOwnershipPosition,
+    InstitutionalPortfolio,
+    PortfolioData,
+    PortfolioHolding,
+)
 from mcp_finnhub.api.models.technical import (
     AggregateSignalsResponse,
     IndicatorResponse,
@@ -70,6 +82,9 @@ __all__ = [
     # Common models
     "CandleResponse",
     "CompanyProfile",
+    # Ownership models
+    "CongressionalTrade",
+    "CongressionalTrading",
     "DividendData",
     # Market data models
     "EarningsData",
@@ -87,11 +102,19 @@ __all__ = [
     # News and sentiment models
     "InsiderSentimentResponse",
     "InsiderTransaction",
+    "InsiderTransactionData",
+    "InsiderTransactions",
+    "InstitutionalOwnership",
+    "InstitutionalOwnershipData",
+    "InstitutionalOwnershipPosition",
+    "InstitutionalPortfolio",
     "MarketStatusResponse",
     "NewsArticle",
     "NewsSentimentResponse",
     "Pattern",
     "PatternRecognitionResponse",
+    "PortfolioData",
+    "PortfolioHolding",
     "PriceTarget",
     "QuoteResponse",
     "RecommendationTrend",
