@@ -11,9 +11,9 @@ class InsiderTransactionData(BaseModel):
     change: int | None = Field(default=None, description="Change in shares")
     filingDate: str | None = Field(default=None, description="Filing date")  # noqa: N815
     transactionDate: str | None = Field(default=None, description="Transaction date")  # noqa: N815
-    transactionCode: str | None = Field(
+    transactionCode: str | None = Field(  # noqa: N815
         default=None, description="Transaction code (S, M, P, etc.)"
-    )  # noqa: N815
+    )
     transactionPrice: float | None = Field(default=None, description="Transaction price")  # noqa: N815
 
     @property
@@ -119,9 +119,9 @@ class CongressionalTrade(BaseModel):
     position: str | None = Field(default=None, description="Position (senator, representative)")
     symbol: str | None = Field(default=None, description="Stock symbol")
     transactionDate: str | None = Field(default=None, description="Transaction date")  # noqa: N815
-    transactionType: str | None = Field(
+    transactionType: str | None = Field(  # noqa: N815
         default=None, description="Transaction type (Purchase, Sale)"
-    )  # noqa: N815
+    )
 
     @property
     def is_purchase(self) -> bool:

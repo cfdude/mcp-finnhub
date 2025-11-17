@@ -155,12 +155,12 @@ class RecommendationTrend(BaseModel):
     buy: int | None = Field(default=None, ge=0, description="Number of buy recommendations")
     hold: int | None = Field(default=None, ge=0, description="Number of hold recommendations")
     sell: int | None = Field(default=None, ge=0, description="Number of sell recommendations")
-    strongBuy: int | None = Field(
+    strongBuy: int | None = Field(  # noqa: N815
         default=None, ge=0, description="Number of strong buy recommendations"
-    )  # noqa: N815
-    strongSell: int | None = Field(
+    )
+    strongSell: int | None = Field(  # noqa: N815
         default=None, ge=0, description="Number of strong sell recommendations"
-    )  # noqa: N815
+    )
     period: str | None = Field(default=None, description="Period (YYYY-MM-DD)")
 
     @property

@@ -1,5 +1,14 @@
 """Pydantic response models for Finnhub API responses."""
 
+from mcp_finnhub.api.models.alternative import (
+    ESGScore,
+    PatentData,
+    Patents,
+    SocialSentiment,
+    SocialSentimentData,
+    SupplyChain,
+    SupplyChainRelationship,
+)
 from mcp_finnhub.api.models.common import (
     CandleResponse,
     CompanyProfile,
@@ -18,6 +27,11 @@ from mcp_finnhub.api.models.estimates import (
     RecommendationTrend,
     RevenueEstimateInfo,
     RevenueEstimates,
+)
+from mcp_finnhub.api.models.filings import (
+    FilingData,
+    FilingSentiment,
+    SimilarityIndex,
 )
 from mcp_finnhub.api.models.fundamentals import (
     BasicFinancials,
@@ -86,6 +100,8 @@ __all__ = [
     "CongressionalTrade",
     "CongressionalTrading",
     "DividendData",
+    # Alternative data models
+    "ESGScore",
     # Market data models
     "EarningsData",
     # Estimates models
@@ -94,6 +110,9 @@ __all__ = [
     "EarningsResponse",
     "EbitdaEstimateInfo",
     "EbitdaEstimates",
+    # SEC filings models
+    "FilingData",
+    "FilingSentiment",
     "FinancialMetric",
     "FinancialReport",
     "FinancialsResponse",
@@ -111,6 +130,8 @@ __all__ = [
     "MarketStatusResponse",
     "NewsArticle",
     "NewsSentimentResponse",
+    "PatentData",
+    "Patents",
     "Pattern",
     "PatternRecognitionResponse",
     "PortfolioData",
@@ -132,7 +153,12 @@ __all__ = [
     "SentimentBuzz",
     "SentimentScore",
     "SignalCount",
+    "SimilarityIndex",
+    "SocialSentiment",
+    "SocialSentimentData",
     "SplitData",
+    "SupplyChain",
+    "SupplyChainRelationship",
     "SupportResistanceLevel",
     "SupportResistanceResponse",
     "SymbolLookupResult",
