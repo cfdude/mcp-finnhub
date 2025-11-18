@@ -9,6 +9,15 @@ from mcp_finnhub.api.models.alternative import (
     SupplyChain,
     SupplyChainRelationship,
 )
+from mcp_finnhub.api.models.calendar import (
+    EarningsCalendar,
+    EarningsEvent,
+    EconomicCalendar,
+    EconomicEvent,
+    FDAEvent,
+    IPOCalendar,
+    IPOEvent,
+)
 from mcp_finnhub.api.models.common import (
     CandleResponse,
     CompanyProfile,
@@ -17,6 +26,11 @@ from mcp_finnhub.api.models.common import (
     QuoteResponse,
     Resolution,
     SymbolLookupResult,
+)
+from mcp_finnhub.api.models.crypto import (
+    CryptoCandleResponse,
+    CryptoProfile,
+    CryptoSymbol,
 )
 from mcp_finnhub.api.models.estimates import (
     EarningsEstimateInfo,
@@ -28,10 +42,20 @@ from mcp_finnhub.api.models.estimates import (
     RevenueEstimateInfo,
     RevenueEstimates,
 )
+from mcp_finnhub.api.models.events import (
+    MarketHoliday,
+    MergerAcquisition,
+    UpgradeDowngrade,
+)
 from mcp_finnhub.api.models.filings import (
     FilingData,
     FilingSentiment,
     SimilarityIndex,
+)
+from mcp_finnhub.api.models.forex import (
+    ForexCandleResponse,
+    ForexRate,
+    ForexSymbol,
 )
 from mcp_finnhub.api.models.fundamentals import (
     BasicFinancials,
@@ -99,23 +123,43 @@ __all__ = [
     # Ownership models
     "CongressionalTrade",
     "CongressionalTrading",
+    # Crypto models
+    "CryptoCandleResponse",
+    "CryptoProfile",
+    "CryptoSymbol",
     "DividendData",
     # Alternative data models
     "ESGScore",
+    # Calendar models
+    "EarningsCalendar",
     # Market data models
     "EarningsData",
     # Estimates models
     "EarningsEstimateInfo",
     "EarningsEstimates",
+    # Calendar models
+    "EarningsEvent",
     "EarningsResponse",
     "EbitdaEstimateInfo",
     "EbitdaEstimates",
+    # Calendar models
+    "EconomicCalendar",
+    "EconomicEvent",
+    # Calendar models
+    "FDAEvent",
     # SEC filings models
     "FilingData",
     "FilingSentiment",
     "FinancialMetric",
     "FinancialReport",
     "FinancialsResponse",
+    # Forex models
+    "ForexCandleResponse",
+    "ForexRate",
+    "ForexSymbol",
+    # Calendar models
+    "IPOCalendar",
+    "IPOEvent",
     "IndicatorResponse",
     "IndicatorValue",
     # News and sentiment models
@@ -127,7 +171,11 @@ __all__ = [
     "InstitutionalOwnershipData",
     "InstitutionalOwnershipPosition",
     "InstitutionalPortfolio",
+    # Market events models
+    "MarketHoliday",
     "MarketStatusResponse",
+    # Market events models
+    "MergerAcquisition",
     "NewsArticle",
     "NewsSentimentResponse",
     "PatentData",
@@ -165,4 +213,6 @@ __all__ = [
     "SymbolSearchResponse",
     "TechnicalAnalysis",
     "TrendInfo",
+    # Market events models
+    "UpgradeDowngrade",
 ]

@@ -4,8 +4,12 @@ from __future__ import annotations
 
 from mcp_finnhub.api.endpoints import (
     alternative,
+    calendar,
+    crypto,
     estimates,
+    events,
     filings,
+    forex,
     fundamentals,
     market,
     news,
@@ -15,8 +19,12 @@ from mcp_finnhub.api.endpoints import (
 
 __all__ = [
     "alternative",
+    "calendar",
+    "crypto",
     "estimates",
+    "events",
     "filings",
+    "forex",
     "fundamentals",
     "market",
     "news",
