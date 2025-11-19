@@ -7,7 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Sprint 6: MCP Server Integration & Management Tools - 2025-11-18
+## [1.0.0] - 2024-11-18
+
+### Release Notes
+
+🎉 **First stable release of mcp-finnhub!**
+
+A comprehensive Model Context Protocol server providing access to 100+ Finnhub API endpoints through 15 specialized tools. Built for AI assistants like Claude Desktop to seamlessly access real-time market data, technical indicators, fundamentals, and alternative data.
+
+**Key Features:**
+- 15 MCP tools covering stocks, crypto, forex, and more
+- Real-time quotes, historical data, and technical indicators
+- Fundamentals, earnings estimates, and analyst ratings
+- Alternative data: ESG, sentiment, supply chain, patents
+- Project-based storage with automatic CSV exports
+- Background job processing for large datasets
+- Configurable tool enable/disable
+- Rate limiting with exponential backoff
+
+**Documentation:**
+- Comprehensive README with quick start guide
+- Complete API reference with 15 tools documented
+- 10 example workflows showing common use cases
+- Integration guide for Claude Desktop
+- Architecture documentation
+
+**Metrics:**
+- 550 story points delivered across 6 phases
+- 584 passing tests with 83% coverage
+- Zero linting/formatting errors
+- 15 tools, 100+ API endpoints
+- 2,750 lines of production code
+- Complete type safety with Pydantic
+
+**Get Started:**
+```bash
+pip install mcp-finnhub
+export FINNHUB_API_KEY=your_key
+export FINNHUB_STORAGE_DIR=/path/to/storage
+mcp-finnhub
+```
+
+See [README.md](README.md) for complete documentation.
+
+---
+
+### Sprint 6: MCP Server Integration & Management Tools - 2024-11-18
 
 #### Added
 - **ServerContext with dependency injection** (Story 6.1, 15 SP)

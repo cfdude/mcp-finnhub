@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "finnhub": {
+      "command": "mcp-finnhub",
+      "env": {
+        "FINNHUB_API_KEY": "your_api_key_here",
+        "FINNHUB_STORAGE_DIR": "/Users/yourname/finnhub-data",
+
+        "comment_core_tools": "=== Core tools (always recommended) ===",
+        "FINNHUB_ENABLE_STOCK_MARKET_DATA": "true",
+        "FINNHUB_ENABLE_TECHNICAL_ANALYSIS": "true",
+        "FINNHUB_ENABLE_NEWS_SENTIMENT": "true",
+
+        "comment_fundamental_tools": "=== Fundamental analysis tools ===",
+        "FINNHUB_ENABLE_STOCK_FUNDAMENTALS": "true",
+        "FINNHUB_ENABLE_STOCK_ESTIMATES": "true",
+        "FINNHUB_ENABLE_STOCK_OWNERSHIP": "true",
+        "FINNHUB_ENABLE_ALTERNATIVE_DATA": "true",
+        "FINNHUB_ENABLE_SEC_FILINGS": "true",
+
+        "comment_multi_asset": "=== Multi-asset tools (disable if not needed) ===",
+        "FINNHUB_ENABLE_CRYPTO": "true",
+        "FINNHUB_ENABLE_FOREX": "true",
+        "FINNHUB_ENABLE_CALENDAR": "true",
+        "FINNHUB_ENABLE_MARKET_EVENTS": "true",
+
+        "comment_performance": "=== Performance tuning ===",
+        "FINNHUB_RATE_LIMIT_RPM": "300",
+        "FINNHUB_REQUEST_TIMEOUT": "30",
+        "FINNHUB_SAFE_TOKEN_LIMIT": "75000",
+        "FINNHUB_MAX_CONCURRENT_JOBS": "5"
+      }
+    }
+  }
+}
