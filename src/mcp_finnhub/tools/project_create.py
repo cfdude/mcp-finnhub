@@ -104,7 +104,7 @@ async def finnhub_project_create(
     if not VALID_NAME.fullmatch(project_name):
         return _invalid_project_name(project_name)
 
-    root = context.path_resolver.root
+    root = context.path_resolver.storage_dir
     project_dir = root / project_name
     if project_dir.exists():
         return _project_exists(project_name)

@@ -38,6 +38,8 @@ class Job(BaseModel):
         error: Error message (if failed)
         progress: Progress percentage (0-100)
         message: Status message for user
+        metadata: Additional metadata
+        updated_at: Most recent update timestamp (computed property)
     """
 
     job_id: str = Field(description="Unique job identifier")
@@ -51,6 +53,12 @@ class Job(BaseModel):
     error: str | None = Field(default=None, description="Error message")
     progress: int = Field(default=0, ge=0, le=100, description="Progress percentage")
     message: str = Field(default="", description="Status message")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+
+    @property
+    def updated_at(self) -> datetime:
+        """Get the most recent update timestamp."""
+        return self.completed_at or self.started_at or self.created_at
 
     @property
     def is_terminal(self) -> bool:

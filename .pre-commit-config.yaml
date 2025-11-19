@@ -1,7 +1,7 @@
 repos:
   # Ruff for linting and formatting
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.8
+    rev: v0.1.9
     hooks:
       # Run linter with auto-fix
       - id: ruff
@@ -60,11 +60,20 @@ repos:
   # Local hooks for project-specific checks
   - repo: local
     hooks:
+      # Python syntax check
+      - id: python-syntax-check
+        name: Python Syntax Check
+        description: Check Python syntax with py_compile
+        entry: python -m py_compile
+        language: system
+        types: [python]
+        pass_filenames: true
+
       # Run pytest with coverage check
       - id: pytest
-        name: PyTest
+        name: PyTest with Coverage
         description: Run tests with 80% minimum coverage
-        entry: pytest
+        entry: bash -c 'uv run pytest --cov=mcp_finnhub --cov-report=term-missing --cov-fail-under=80 -x'
         language: system
         pass_filenames: false
         always_run: true

@@ -64,7 +64,7 @@ class TestServerContext:
         """Test path resolver is configured from AppConfig."""
         context = ServerContext(config)
 
-        assert context.path_resolver.root == tmp_path
+        assert context.path_resolver.storage_dir == tmp_path
 
     def test_output_handler_has_all_dependencies(self, config):
         """Test output handler receives all required dependencies."""
@@ -84,22 +84,22 @@ class TestServerContext:
         context = ServerContext(config)
 
         # Client should start open
-        assert not context.client.client.is_closed
+        assert not context.client.is_closed
 
         # After aclose, client should be closed
         await context.aclose()
-        assert context.client.client.is_closed
+        assert context.client.is_closed
 
     @pytest.mark.asyncio
     async def test_context_manager_support(self, config):
         """Test ServerContext can be used with context cleanup."""
         context = ServerContext(config)
 
-        assert not context.client.client.is_closed
+        assert not context.client.is_closed
 
         await context.aclose()
 
-        assert context.client.client.is_closed
+        assert context.client.is_closed
 
 
 class TestBuildServerContext:

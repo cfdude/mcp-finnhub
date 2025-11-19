@@ -2,11 +2,32 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import TYPE_CHECKING
+
 import pytest
 
+from mcp_finnhub.config import AppConfig
 from mcp_finnhub.server import ServerContext
 from mcp_finnhub.tools.project_create import finnhub_project_create
 from mcp_finnhub.tools.project_list import finnhub_project_list
+
+if TYPE_CHECKING:
+    pass
+
+
+@pytest.fixture
+def test_config(tmp_path: Path) -> AppConfig:
+    """Create test configuration."""
+    return AppConfig(
+        finnhub_api_key="test_api_key",
+        storage_directory=tmp_path / "data",
+        rate_limit_rpm=60,
+        request_timeout=5,
+        max_retries=2,
+        retry_backoff_factor=1.5,
+        retry_jitter=0.1,
+    )
 
 
 class TestProjectList:
@@ -104,7 +125,7 @@ class TestProjectList:
         await finnhub_project_create(context, "create", project="test-project")
 
         # Add some files to subdirectories
-        project_dir = tmp_path / "test-project"
+        project_dir = tmp_path / "data" / "test-project"
         (project_dir / "candles" / "data1.csv").write_text("test")
         (project_dir / "candles" / "data2.csv").write_text("test")
         (project_dir / "quotes" / "data1.csv").write_text("test")

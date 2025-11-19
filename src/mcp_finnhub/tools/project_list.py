@@ -87,7 +87,7 @@ async def finnhub_project_list(
     if operation != "list":
         return _unknown_operation(operation)
 
-    root = context.path_resolver.root
+    root = context.path_resolver.storage_dir
     if not root.exists():
         return {"projects": [], "total_projects": 0}
 

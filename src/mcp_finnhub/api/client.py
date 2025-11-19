@@ -108,6 +108,15 @@ class FinnhubClient:
         """Exit async context manager and close client."""
         await self.aclose()
 
+    @property
+    def is_closed(self) -> bool:
+        """Check if the client is closed.
+
+        Returns:
+            True if the client has been closed, False otherwise
+        """
+        return self._closed
+
     async def aclose(self) -> None:
         """Close the underlying httpx client if we own it."""
         if not self._closed and not self._provided_client:
