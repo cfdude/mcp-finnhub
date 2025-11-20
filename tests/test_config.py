@@ -396,6 +396,9 @@ class TestLoadConfig:
         monkeypatch.delenv("FINNHUB_API_KEY", raising=False)
         monkeypatch.delenv("FINNHUB_STORAGE_DIR", raising=False)
 
+        # Prevent load_dotenv from loading .env file
+        monkeypatch.setattr("mcp_finnhub.config.load_dotenv", lambda: None)
+
         with pytest.raises(ValidationError):
             load_config()
 
