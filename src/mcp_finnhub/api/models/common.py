@@ -242,7 +242,7 @@ class MarketStatusResponse(BaseModel):
         exchange: Exchange name
         holiday: Holiday name if market is closed
         isOpen: Whether market is currently open
-        session: Trading session (pre-market, regular, after-hours, closed)
+        session: Trading session (pre-market, regular, post-market, after-hours, closed)
         timezone: Exchange timezone
         t: Current timestamp (Unix seconds)
     """
@@ -258,7 +258,7 @@ class MarketStatusResponse(BaseModel):
     @classmethod
     def validate_session(cls, v: str) -> str:
         """Validate session is a known type."""
-        valid_sessions = {"pre-market", "regular", "after-hours", "closed"}
+        valid_sessions = {"pre-market", "regular", "post-market", "after-hours", "closed"}
         if v not in valid_sessions:
             raise ValueError(f"Session must be one of: {', '.join(valid_sessions)}")
         return v
