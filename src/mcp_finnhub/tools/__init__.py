@@ -126,9 +126,10 @@ def _get_operation_examples(tool_name: str, operation: str) -> str:
             "get_ipo_calendar": '{"operation": "get_ipo_calendar", "from_date": "2024-01-01", "to_date": "2024-01-31"}',
         },
         "finnhub_technical_analysis": {
-            "get_pattern_recognition": '{"operation": "get_pattern_recognition", "symbol": "AAPL", "resolution": "D"}',
-            "get_support_resistance": '{"operation": "get_support_resistance", "symbol": "AAPL", "resolution": "D"}',
-            "get_aggregate_indicator": '{"operation": "get_aggregate_indicator", "symbol": "AAPL", "resolution": "D"}',
+            "scan_patterns": '{"operation": "scan_patterns", "symbol": "AAPL", "resolution": "D"}',
+            "support_resistance": '{"operation": "support_resistance", "symbol": "AAPL", "resolution": "D"}',
+            "aggregate_signals": '{"operation": "aggregate_signals", "symbol": "AAPL", "resolution": "D"}',
+            "get_indicator": '{"operation": "get_indicator", "symbol": "AAPL", "resolution": "D", "indicator": "sma", "timeperiod": 14}',
         },
     }
 
