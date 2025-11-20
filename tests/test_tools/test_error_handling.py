@@ -136,7 +136,7 @@ class TestExecuteToolOperation:
 
     @pytest.mark.asyncio
     async def test_execute_tool_operation_catches_type_error(self):
-        """Test that TypeError is caught and re-raised with helpful message."""
+        """Test that TypeError is caught and returns structured error response."""
         from mcp_finnhub.tools import finnhub_stock_market_data
         from mcp_finnhub.server import build_server_context
 
@@ -149,19 +149,18 @@ class TestExecuteToolOperation:
 
         try:
             # Pass symbol when exchange is expected
-            with pytest.raises(ValueError) as exc_info:
-                await finnhub_stock_market_data(
-                    context,
-                    "get_market_status",
-                    symbol="US",  # Wrong param name!
-                )
+            result = await finnhub_stock_market_data(
+                context,
+                "get_market_status",
+                symbol="US",  # Wrong param name!
+            )
 
-            error_msg = str(exc_info.value)
-
-            # Should have helpful information
-            assert "Required parameters: exchange" in error_msg
-            assert "Provided parameters: symbol" in error_msg
-            assert "Example usage:" in error_msg
+            # Should return structured error response
+            assert result["error"] == "parameter_error"
+            assert "exchange" in result["required_params"]
+            assert result["operation"] == "get_market_status"
+            assert result["tool"] == "finnhub_stock_market_data"
+            assert "example" in result
         finally:
             await context.aclose()
 

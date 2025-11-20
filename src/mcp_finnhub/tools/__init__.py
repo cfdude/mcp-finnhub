@@ -54,6 +54,95 @@ def _get_param_info(method: Callable[..., Any]) -> dict[str, Any]:
     return {"required": required, "optional": optional}
 
 
+def _generate_tool_help(tool: Any, tool_name: str) -> dict[str, Any]:
+    """Generate structured help information for a tool.
+
+    Args:
+        tool: The tool instance
+        tool_name: Name of the MCP tool
+
+    Returns:
+        Structured help with all operations, parameters, and examples
+    """
+    operations = {}
+
+    for op_name in sorted(tool.VALID_OPERATIONS):
+        method = getattr(tool, op_name, None)
+        if method is None:
+            continue
+
+        # Get parameter info
+        param_info = _get_param_info(method)
+
+        # Get docstring
+        doc = method.__doc__ or "No description available"
+        description = doc.split("\n")[0].strip()
+
+        # Get example if available
+        example = _get_operation_examples(tool_name, op_name)
+
+        operations[op_name] = {
+            "description": description,
+            "required_params": param_info["required"],
+            "optional_params": param_info["optional"],
+        }
+
+        if example:
+            operations[op_name]["example"] = example
+
+    return {
+        "tool": tool_name,
+        "description": tool.__class__.__doc__ or "No description available",
+        "operations": operations,
+        "hint": "Call with operation='<operation_name>' and required parameters",
+    }
+
+
+def _create_error_response(
+    error_type: str,
+    message: str,
+    tool_name: str,
+    operation: str | None = None,
+    valid_operations: list[str] | None = None,
+    required_params: list[str] | None = None,
+    optional_params: list[str] | None = None,
+    example: str | None = None,
+) -> dict[str, Any]:
+    """Create a structured error response for AI agents.
+
+    Args:
+        error_type: Type of error (invalid_operation, missing_param, etc.)
+        message: Human-readable error message
+        tool_name: Name of the MCP tool
+        operation: Operation that was attempted
+        valid_operations: List of valid operations for this tool
+        required_params: Required parameters for the operation
+        optional_params: Optional parameters for the operation
+        example: Example usage
+
+    Returns:
+        Structured error response dict
+    """
+    response: dict[str, Any] = {
+        "error": error_type,
+        "message": message,
+        "tool": tool_name,
+    }
+
+    if operation:
+        response["operation"] = operation
+    if valid_operations:
+        response["valid_operations"] = valid_operations
+    if required_params:
+        response["required_params"] = required_params
+    if optional_params:
+        response["optional_params"] = optional_params
+    if example:
+        response["example"] = example
+
+    return response
+
+
 def _format_error_message(
     tool_name: str,
     operation: str,
@@ -152,20 +241,41 @@ async def _execute_tool_operation(
         kwargs: Parameters for the operation
 
     Returns:
-        Operation result
-
-    Raises:
-        ValueError: With AI-friendly error message on parameter errors
+        Operation result or structured error/help response
     """
-    tool.validate_operation(operation)
+    # Handle help/discovery operation
+    if operation == "help":
+        return _generate_tool_help(tool, tool_name)
+
+    # Validate operation with structured error
+    if operation not in tool.VALID_OPERATIONS:
+        return _create_error_response(
+            error_type="invalid_operation",
+            message=f"Operation '{operation}' not found in {tool_name}",
+            tool_name=tool_name,
+            operation=operation,
+            valid_operations=sorted(tool.VALID_OPERATIONS),
+        )
+
     method = getattr(tool, operation)
+    param_info = _get_param_info(method)
 
     try:
         return await method(**kwargs)
     except TypeError as e:
-        # Parameter mismatch - provide helpful guidance
-        error_msg = _format_error_message(tool_name, operation, method, kwargs, e)
-        raise ValueError(error_msg) from e
+        # Parameter mismatch - provide structured error
+        error_str = str(e)
+        example = _get_operation_examples(tool_name, operation)
+
+        return _create_error_response(
+            error_type="parameter_error",
+            message=f"Parameter error in {operation}(): {error_str}",
+            tool_name=tool_name,
+            operation=operation,
+            required_params=param_info["required"],
+            optional_params=param_info["optional"],
+            example=example if example else None,
+        )
 
 
 # Wrapper functions for class-based data tools
