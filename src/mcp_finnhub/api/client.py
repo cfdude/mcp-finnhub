@@ -96,6 +96,7 @@ class FinnhubClient:
             base_url="https://finnhub.io/api/v1",
             timeout=config.request_timeout,
             headers={"X-Finnhub-Token": config.finnhub_api_key},
+            follow_redirects=True,
         )
         self._rate_limiter = _AsyncRateLimiter(config.rate_limit_rpm, period_seconds=60.0)
         self._closed = False
