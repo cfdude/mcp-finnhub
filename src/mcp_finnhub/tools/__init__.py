@@ -283,6 +283,7 @@ async def _execute_tool_operation(
     tool_name: str,
     operation: str,
     kwargs: dict[str, Any],
+    context: ServerContext | None = None,
 ) -> dict[str, Any]:
     """Execute a tool operation with AI-friendly error handling.
 
@@ -291,6 +292,7 @@ async def _execute_tool_operation(
         tool_name: Name of the MCP tool
         operation: Operation to execute
         kwargs: Parameters for the operation
+        context: Server context for output routing (optional)
 
     Returns:
         Operation result or structured error/help response
@@ -313,7 +315,30 @@ async def _execute_tool_operation(
     param_info = _get_param_info(method)
 
     try:
-        return await method(**kwargs)
+        # Extract project name before passing kwargs to method
+        # (project is used for output routing, not by the tool methods)
+        project_name = kwargs.pop("project", None)
+
+        # Execute the tool operation
+        result = await method(**kwargs)
+
+        # Route result through output handler if context available
+        if context is not None:
+            # Determine export format - use CSV for list data
+            export_format = "csv" if isinstance(result, list) else "json"
+
+            # Create operation identifier for filename
+            symbol = kwargs.get("symbol", "")
+            op_name = f"{operation}_{symbol}" if symbol else operation
+
+            result = context.output_handler.route_result(
+                data=result,
+                project_name=project_name,
+                operation_name=op_name,
+                export_format=export_format,
+            )
+
+        return result
     except TypeError as e:
         # Parameter mismatch - provide structured error
         error_str = str(e)
@@ -336,7 +361,9 @@ async def finnhub_stock_market_data(
 ) -> dict[str, Any]:
     """Stock market data tool handler (wrapper for StockMarketDataTool)."""
     tool = StockMarketDataTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_stock_market_data", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_stock_market_data", operation, kwargs, context
+    )
 
 
 async def finnhub_news_sentiment(
@@ -344,7 +371,7 @@ async def finnhub_news_sentiment(
 ) -> dict[str, Any]:
     """News and sentiment tool handler (wrapper for NewsSentimentTool)."""
     tool = NewsSentimentTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_news_sentiment", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_news_sentiment", operation, kwargs, context)
 
 
 async def finnhub_technical_analysis(
@@ -352,7 +379,9 @@ async def finnhub_technical_analysis(
 ) -> dict[str, Any]:
     """Technical analysis tool handler (wrapper for TechnicalAnalysisTool)."""
     tool = TechnicalAnalysisTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_technical_analysis", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_technical_analysis", operation, kwargs, context
+    )
 
 
 async def finnhub_stock_fundamentals(
@@ -360,7 +389,9 @@ async def finnhub_stock_fundamentals(
 ) -> dict[str, Any]:
     """Stock fundamentals tool handler (wrapper for StockFundamentalsTool)."""
     tool = StockFundamentalsTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_stock_fundamentals", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_stock_fundamentals", operation, kwargs, context
+    )
 
 
 async def finnhub_stock_estimates(
@@ -368,7 +399,9 @@ async def finnhub_stock_estimates(
 ) -> dict[str, Any]:
     """Stock estimates tool handler (wrapper for StockEstimatesTool)."""
     tool = StockEstimatesTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_stock_estimates", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_stock_estimates", operation, kwargs, context
+    )
 
 
 async def finnhub_stock_ownership(
@@ -376,7 +409,9 @@ async def finnhub_stock_ownership(
 ) -> dict[str, Any]:
     """Stock ownership tool handler (wrapper for StockOwnershipTool)."""
     tool = StockOwnershipTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_stock_ownership", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_stock_ownership", operation, kwargs, context
+    )
 
 
 async def finnhub_alternative_data(
@@ -384,7 +419,9 @@ async def finnhub_alternative_data(
 ) -> dict[str, Any]:
     """Alternative data tool handler (wrapper for AlternativeDataTool)."""
     tool = AlternativeDataTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_alternative_data", operation, kwargs)
+    return await _execute_tool_operation(
+        tool, "finnhub_alternative_data", operation, kwargs, context
+    )
 
 
 async def finnhub_sec_filings(
@@ -392,7 +429,7 @@ async def finnhub_sec_filings(
 ) -> dict[str, Any]:
     """SEC filings tool handler (wrapper for SecFilingsTool)."""
     tool = SecFilingsTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_sec_filings", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_sec_filings", operation, kwargs, context)
 
 
 async def finnhub_crypto_data(
@@ -400,7 +437,7 @@ async def finnhub_crypto_data(
 ) -> dict[str, Any]:
     """Crypto data tool handler (wrapper for CryptoDataTool)."""
     tool = CryptoDataTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_crypto_data", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_crypto_data", operation, kwargs, context)
 
 
 async def finnhub_forex_data(
@@ -408,7 +445,7 @@ async def finnhub_forex_data(
 ) -> dict[str, Any]:
     """Forex data tool handler (wrapper for ForexDataTool)."""
     tool = ForexDataTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_forex_data", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_forex_data", operation, kwargs, context)
 
 
 async def finnhub_calendar_data(
@@ -416,7 +453,7 @@ async def finnhub_calendar_data(
 ) -> dict[str, Any]:
     """Calendar data tool handler (wrapper for CalendarDataTool)."""
     tool = CalendarDataTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_calendar_data", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_calendar_data", operation, kwargs, context)
 
 
 async def finnhub_market_events(
@@ -424,7 +461,7 @@ async def finnhub_market_events(
 ) -> dict[str, Any]:
     """Market events tool handler (wrapper for MarketEventsTool)."""
     tool = MarketEventsTool(context.client)
-    return await _execute_tool_operation(tool, "finnhub_market_events", operation, kwargs)
+    return await _execute_tool_operation(tool, "finnhub_market_events", operation, kwargs, context)
 
 
 __all__ = [

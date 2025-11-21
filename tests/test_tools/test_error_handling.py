@@ -179,9 +179,7 @@ class TestExecuteToolOperation:
 
         try:
             # Mock the API call
-            with patch.object(
-                context.client, "get", new_callable=AsyncMock
-            ) as mock_get:
+            with patch.object(context.client, "get", new_callable=AsyncMock) as mock_get:
                 mock_get.return_value = {
                     "exchange": "US",
                     "isOpen": True,
