@@ -137,8 +137,8 @@ class TestExecuteToolOperation:
     @pytest.mark.asyncio
     async def test_execute_tool_operation_catches_type_error(self):
         """Test that TypeError is caught and returns structured error response."""
-        from mcp_finnhub.tools import finnhub_stock_market_data
         from mcp_finnhub.server import build_server_context
+        from mcp_finnhub.tools import finnhub_stock_market_data
 
         # Create a mock context - we'll get a TypeError before API is called
         # because wrong parameters are passed
@@ -169,8 +169,8 @@ class TestExecuteToolOperation:
         """Test that valid parameters work correctly."""
         from unittest.mock import AsyncMock, patch
 
-        from mcp_finnhub.tools import finnhub_stock_market_data
         from mcp_finnhub.server import build_server_context
+        from mcp_finnhub.tools import finnhub_stock_market_data
 
         context = build_server_context(
             finnhub_api_key="test_key",

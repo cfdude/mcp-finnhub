@@ -209,16 +209,68 @@ def _get_operation_examples(tool_name: str, operation: str) -> str:
             "get_company_news": '{"operation": "get_company_news", "symbol": "AAPL", "from_date": "2024-01-01", "to_date": "2024-01-31"}',
             "get_market_news": '{"operation": "get_market_news", "category": "general"}',
             "get_news_sentiment": '{"operation": "get_news_sentiment", "symbol": "AAPL"}',
-        },
-        "finnhub_calendar_data": {
-            "get_earnings_calendar": '{"operation": "get_earnings_calendar"}',
-            "get_ipo_calendar": '{"operation": "get_ipo_calendar", "from_date": "2024-01-01", "to_date": "2024-01-31"}',
+            "get_insider_sentiment": '{"operation": "get_insider_sentiment", "symbol": "AAPL"}',
         },
         "finnhub_technical_analysis": {
             "scan_patterns": '{"operation": "scan_patterns", "symbol": "AAPL", "resolution": "D"}',
             "support_resistance": '{"operation": "support_resistance", "symbol": "AAPL", "resolution": "D"}',
             "aggregate_signals": '{"operation": "aggregate_signals", "symbol": "AAPL", "resolution": "D"}',
-            "get_indicator": '{"operation": "get_indicator", "symbol": "AAPL", "resolution": "D", "indicator": "sma", "timeperiod": 14}',
+            "get_indicator": '{"operation": "get_indicator", "symbol": "AAPL", "resolution": "D", "indicator": "sma", "timeperiod": 14, "from_timestamp": 1704067200, "to_timestamp": 1706745600}',
+        },
+        "finnhub_stock_fundamentals": {
+            "get_basic_financials": '{"operation": "get_basic_financials", "symbol": "AAPL"}',
+            "get_reported_financials": '{"operation": "get_reported_financials", "symbol": "AAPL", "freq": "quarterly"}',
+            "get_sec_financials": '{"operation": "get_sec_financials", "symbol": "AAPL"}',
+            "get_dividends": '{"operation": "get_dividends", "symbol": "AAPL", "from_date": "2023-01-01", "to_date": "2024-01-01"}',
+            "get_splits": '{"operation": "get_splits", "symbol": "AAPL", "from_date": "2020-01-01", "to_date": "2024-01-01"}',
+            "get_revenue_breakdown": '{"operation": "get_revenue_breakdown", "symbol": "AAPL"}',
+        },
+        "finnhub_stock_estimates": {
+            "get_earnings_estimates": '{"operation": "get_earnings_estimates", "symbol": "AAPL", "freq": "quarterly"}',
+            "get_revenue_estimates": '{"operation": "get_revenue_estimates", "symbol": "AAPL", "freq": "quarterly"}',
+            "get_ebitda_estimates": '{"operation": "get_ebitda_estimates", "symbol": "AAPL", "freq": "annual"}',
+            "get_price_targets": '{"operation": "get_price_targets", "symbol": "AAPL"}',
+            "get_recommendations": '{"operation": "get_recommendations", "symbol": "AAPL"}',
+        },
+        "finnhub_stock_ownership": {
+            "get_insider_transactions": '{"operation": "get_insider_transactions", "symbol": "AAPL"}',
+            "get_institutional_ownership": '{"operation": "get_institutional_ownership", "symbol": "AAPL"}',
+            "get_institutional_portfolio": '{"operation": "get_institutional_portfolio", "cik": "0001067983"}',
+            "get_congressional_trades": '{"operation": "get_congressional_trades", "symbol": "AAPL"}',
+        },
+        "finnhub_alternative_data": {
+            "get_esg_scores": '{"operation": "get_esg_scores", "symbol": "AAPL"}',
+            "get_social_sentiment": '{"operation": "get_social_sentiment", "symbol": "AAPL"}',
+            "get_supply_chain": '{"operation": "get_supply_chain", "symbol": "AAPL"}',
+            "get_patents": '{"operation": "get_patents", "symbol": "AAPL"}',
+        },
+        "finnhub_sec_filings": {
+            "get_sec_filings": '{"operation": "get_sec_filings", "symbol": "AAPL"}',
+            "get_filing_sentiment": '{"operation": "get_filing_sentiment", "access_number": "0000320193-23-000077"}',
+            "get_similarity_index": '{"operation": "get_similarity_index", "symbol": "AAPL", "freq": "annual"}',
+        },
+        "finnhub_crypto_data": {
+            "get_crypto_exchanges": '{"operation": "get_crypto_exchanges"}',
+            "get_crypto_symbols": '{"operation": "get_crypto_symbols", "exchange": "binance"}',
+            "get_crypto_profile": '{"operation": "get_crypto_profile", "symbol": "BTC"}',
+            "get_crypto_candles": '{"operation": "get_crypto_candles", "symbol": "BINANCE:BTCUSDT", "resolution": "D", "from_timestamp": 1704067200, "to_timestamp": 1706745600}',
+        },
+        "finnhub_forex_data": {
+            "get_forex_exchanges": '{"operation": "get_forex_exchanges"}',
+            "get_forex_symbols": '{"operation": "get_forex_symbols", "exchange": "oanda"}',
+            "get_forex_rates": '{"operation": "get_forex_rates", "base": "USD"}',
+            "get_forex_candles": '{"operation": "get_forex_candles", "symbol": "OANDA:EUR_USD", "resolution": "D", "from_timestamp": 1704067200, "to_timestamp": 1706745600}',
+        },
+        "finnhub_calendar_data": {
+            "get_earnings_calendar": '{"operation": "get_earnings_calendar"}',
+            "get_ipo_calendar": '{"operation": "get_ipo_calendar", "from_date": "2024-01-01", "to_date": "2024-01-31"}',
+            "get_economic_calendar": '{"operation": "get_economic_calendar"}',
+            "get_fda_calendar": '{"operation": "get_fda_calendar"}',
+        },
+        "finnhub_market_events": {
+            "get_market_holidays": '{"operation": "get_market_holidays", "exchange": "US"}',
+            "get_upgrade_downgrade": '{"operation": "get_upgrade_downgrade", "symbol": "AAPL"}',
+            "get_merger_acquisition": '{"operation": "get_merger_acquisition"}',
         },
     }
 

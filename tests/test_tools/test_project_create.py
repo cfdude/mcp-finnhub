@@ -4,16 +4,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pytest
 
 from mcp_finnhub.config import AppConfig
 from mcp_finnhub.server import ServerContext
 from mcp_finnhub.tools.project_create import finnhub_project_create
-
-if TYPE_CHECKING:
-    pass
 
 
 @pytest.fixture

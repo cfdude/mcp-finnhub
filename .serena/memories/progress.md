@@ -1,215 +1,184 @@
 # mcp-finnhub Progress Tracker
 
-## Sprint 2 - API Client & Job Management (85 SP) ✅ COMPLETE
-**Status:** ✅ COMPLETE  
-**Start Date:** 2025-11-14  
-**End Date:** 2025-11-14  
-**Velocity:** 85 SP (target: 70-90 SP)
+## Current Status: v1.0.0 - Production Ready ✅
 
-### Summary
-Successfully completed all 6 stories in Sprint 2, delivering production-ready API client with rate limiting/retries, comprehensive error handling, Pydantic response models, and complete background job management system. All code has excellent test coverage (80-100% per module) with zero linting errors/warnings.
+**Last Updated:** 2025-11-20
 
 ---
 
-### Story 2.1 (20 SP): FinnhubClient with httpx ✅
-- Async HTTP client using httpx with context manager support
-- Token bucket rate limiting (60 RPM default, configurable)
-- Exponential backoff with jitter for retries
-- Retry on 429, 500-504; no retry on 401, 400, 404
-- 32 tests, 80.81% coverage for client.py
-- Git commit: `feat(api): implement FinnhubClient with rate limiting and retry logic`
+## Project Summary
 
-### Story 2.2 (15 SP): FinnhubAPIError and error handling ✅
-- FinnhubAPIError base class with status_code, message, response_data, request_url, request_params
-- Specific error types: AuthenticationError (401), PermissionError (403), NotFoundError (404), RateLimitError (429), ValidationError (400), ServerError (500-504)
-- handle_api_error() function to map HTTP responses to error types
-- 22 tests, 100% coverage for errors.py
-- Git commit: `feat(api): implement comprehensive error handling for Finnhub API`
-
-### Story 2.3 (15 SP): Pydantic response models ✅
-- QuoteResponse, CandleResponse, NewsArticle, CompanyProfile, SymbolLookupResult, MarketStatusResponse
-- Field validators for timestamps, IPO dates, status values, session values
-- Properties for datetime conversions (timestamp_dt, datetime_dt) and related symbols parsing
-- Resolution enum for candle time periods
-- 21 tests, 100% coverage for models/common.py
-- Git commit: `feat(api): implement Pydantic response models for common endpoints`
-
-### Story 2.4 (15 SP): JobManager for background task lifecycle ✅
-- Job and JobStatus Pydantic models (PENDING, RUNNING, COMPLETED, FAILED, CANCELLED)
-- JobManager with JSON file persistence and atomic writes (temp file + rename)
-- Methods: create_job(), get_job(), update_job(), complete_job(), fail_job(), cancel_job(), list_jobs(), delete_job(), cleanup_old_jobs()
-- UUID-based job IDs, filtering and sorting support
-- 39 tests (18 for Job model, 21 for JobManager), 100% coverage for jobs/models.py, 83.08% for jobs/manager.py
-- Git commit: `feat(jobs): implement JobManager for background task lifecycle`
-
-### Story 2.5 (10 SP): BackgroundWorker for async job execution ✅
-- Async job execution with asyncio.create_task()
-- Concurrency limits with semaphore (configurable max_workers)
-- Job timeouts with asyncio.wait_for()
-- Worker lifecycle: execute_job(), submit_job(), cancel_job(), wait_for_job(), shutdown()
-- Tool registration and handler system
-- Properties: running_count, available_slots, is_running()
-- 20 tests, 99.09% coverage for jobs/worker.py
-- Git commit: `feat(jobs): implement BackgroundWorker for async job execution`
-
-### Story 2.6 (10 SP): Comprehensive integration tests ✅
-- Integration tests for Client + Error handling (2 tests)
-- Integration tests for Client + Pydantic models (2 tests)
-- Integration tests for JobManager + BackgroundWorker (2 tests)
-- End-to-end workflow tests (3 tests): API fetch → model parse → job execution
-- 9 integration tests covering all Sprint 2 components
-- Git commit: `test: add comprehensive Sprint 2 integration tests`
-
-### Linting Fixes ✅
-- Fixed all E741, N815 warnings for Finnhub API field names (external spec requirements)
-- Fixed SIM102 warnings (combined nested if statements)
-- Fixed B007, RUF043 warnings in tests
-- Auto-fixed TC type-checking import warnings
-- Zero linting errors/warnings for all Sprint 2 code
-- Git commit: `fix: resolve all linting errors and warnings for Sprint 2`
-
----
-
-## Sprint 2 Achievements
-
-### Deliverables
-✅ Production-ready API client with rate limiting and retries  
-✅ Comprehensive error handling with structured exceptions  
-✅ Type-safe response models with Pydantic validation  
-✅ Atomic job persistence with file-based storage  
-✅ Concurrent job execution with configurable limits and timeouts  
-✅ Graceful worker shutdown with optional job cancellation  
-✅ Integration tests covering all components  
-✅ Zero linting errors/warnings
-
-### Files Created
-**Source Code:**
-- src/mcp_finnhub/api/client.py (254 lines, 80.81% coverage)
-- src/mcp_finnhub/api/errors.py (214 lines, 100% coverage)
-- src/mcp_finnhub/api/models/common.py (267 lines, 100% coverage)
-- src/mcp_finnhub/jobs/models.py (106 lines, 100% coverage)
-- src/mcp_finnhub/jobs/manager.py (352 lines, 83.08% coverage)
-- src/mcp_finnhub/jobs/worker.py (269 lines, 99.09% coverage)
-
-**Tests:**
-- tests/test_api/test_client.py (454 lines, 32 tests)
-- tests/test_api/test_errors.py (313 lines, 22 tests)
-- tests/test_api/test_models.py (299 lines, 21 tests)
-- tests/test_jobs/test_models.py (242 lines, 18 tests)
-- tests/test_jobs/test_manager.py (266 lines, 21 tests)
-- tests/test_jobs/test_worker.py (408 lines, 20 tests)
-- tests/test_integration/test_sprint2_integration.py (364 lines, 9 tests)
-
-### Git Commits (7 total)
-```
-4907ab9 fix: resolve all linting errors and warnings for Sprint 2
-9f6ae7a test: add comprehensive Sprint 2 integration tests
-e54e217 feat(jobs): implement BackgroundWorker for async job execution
-e083a08 feat(jobs): implement JobManager for background task lifecycle
-4664132 feat(api): implement Pydantic response models for common endpoints
-3b9240f feat(api): implement comprehensive error handling for Finnhub API
-936f90c feat(api): implement FinnhubClient with rate limiting and retry logic
-```
+mcp-finnhub is a complete, production-ready MCP server providing access to 100+ Finnhub API endpoints through 15 specialized tools. The project has been through initial development and is now in maintenance/enhancement phase.
 
 ### Key Metrics
-- **Story Points Completed:** 85 / 85 (100%)
-- **Test Count:** 121 tests (53 API + 59 jobs + 9 integration)
-- **Test Pass Rate:** 100%
-- **Module Coverage:** 
-  - client.py: 80.81%
-  - errors.py: 100%
-  - models/common.py: 100%
-  - jobs/models.py: 100%
-  - jobs/manager.py: 83.08%
-  - jobs/worker.py: 99.09%
-- **Linting:** Zero errors, zero warnings
-- **Lines of Code:** ~2,500+ lines (source + tests)
-- **Sprint Duration:** Single session (2025-11-14)
+- **Version:** 1.0.0
+- **Tests:** 625 passing
+- **Coverage:** 88.73%
+- **Tools:** 15 MCP tools
+- **Operations:** 53 total operations
+- **API Endpoints:** 100+ Finnhub endpoints covered
+- **Linting:** Zero errors/warnings
 
 ---
 
-## Sprint 1 - Foundation & Core Infrastructure (90 SP) ✅ COMPLETE
-**Status:** ✅ COMPLETE  
-**Start Date:** 2025-11-14  
-**End Date:** 2025-11-14  
-**Velocity:** 90 SP
+## Completed Phases (All 7 Complete)
 
-### Summary
-Established complete project foundation with Pydantic configuration, core utilities, and comprehensive testing infrastructure.
-
-### Key Achievements
-- Complete project structure following mcp-fred pattern
-- Pydantic-based configuration system (AppConfig, ToolConfig)
+### Phase 1: Foundation & Core Infrastructure ✅
+- Project scaffold with pyproject.toml
+- AppConfig with Pydantic validation
+- ToolConfig for enable/disable functionality
 - Core utilities (TokenEstimator, PathResolver, FileWriter)
-- Pre-commit hooks with Ruff linting/formatting
-- 73 tests with 88-100% coverage per module
+- Pre-commit hooks with Ruff
 
-### Git Commits (11 total)
-All commits follow conventional format with detailed descriptions.
+### Phase 2: API Client & Job Management ✅
+- FinnhubClient with async httpx
+- Rate limiting (configurable RPM)
+- Retry logic with exponential backoff
+- Comprehensive error handling
+- JobManager for background tasks
+- BackgroundWorker for async execution
+
+### Phase 3: Core Tools (Mandatory) ✅
+- finnhub_stock_market_data (8 operations)
+- finnhub_technical_analysis (4 operations)
+- finnhub_news_sentiment (4 operations)
+
+### Phase 4: Stock Analysis Tools ✅
+- finnhub_stock_fundamentals (6 operations)
+- finnhub_stock_estimates (5 operations)
+- finnhub_stock_ownership (4 operations)
+- finnhub_alternative_data (4 operations)
+- finnhub_sec_filings (3 operations)
+
+### Phase 5: Multi-Asset & Discovery Tools ✅
+- finnhub_crypto_data (4 operations)
+- finnhub_forex_data (4 operations)
+- finnhub_calendar_data (4 operations)
+- finnhub_market_events (3 operations)
+
+### Phase 6: MCP Server Integration ✅
+- ServerContext with dependency injection
+- Tool registry with enable/disable
+- STDIO transport for MCP protocol
+- Management tools (project_create, project_list, job_status)
+- CLI entry point
+
+### Phase 7: Documentation & Polish ✅
+- Comprehensive README
+- API documentation
+- Architecture documentation
+- Example workflows
 
 ---
 
-## Next Sprint: Sprint 3 - Core Tools (Mandatory) - 90 SP
-**Status:** 📋 PLANNED - READY TO START
+## Recent Enhancements (Post v1.0.0)
 
-**Stories:**
-1. Story 3.1 (30 SP): Implement finnhub_technical_analysis tool (4 operations)
-2. Story 3.2 (30 SP): Implement finnhub_stock_market_data tool (8 operations)
-3. Story 3.3 (20 SP): Implement finnhub_news_sentiment tool (4 operations)
-4. Story 3.4 (10 SP): Comprehensive tests for all 3 tools (90% coverage)
+### November 2025 Updates
 
-**Goal:** Implement the 3 mandatory MCP tools with comprehensive endpoint coverage, following mcp-fred patterns.
+#### AI-Friendly Error Messages
+- Structured error responses with JSON format
+- Error types: invalid_operation, parameter_error
+- Includes valid_operations, required_params, examples
+- Helps AI agents self-correct without context
 
-**Total Tools:** 3 tools covering 16 operations across 16 Finnhub API endpoints
+#### Help/Discovery Operation
+- Added `operation="help"` to all tools
+- Returns all operations with parameters and examples
+- Enables AI agents to learn tool capabilities
+
+#### HTTP Redirect Fix
+- Added follow_redirects=True to httpx client
+- Fixes /indicator endpoint redirect to /stock/candle
+
+#### Subscription Tier Support
+- Confirmed Basic tier ($49.99/month, 150 RPM) working
+- Stock candles and indicators accessible
+- Rate limit documentation updated
 
 ---
 
-## Overall Project Status
+## Tool Inventory (15 Tools)
 
-### Completed Sprints: 2 / 7 (29%)
-- ✅ Sprint 1: Foundation & Core Infrastructure (90 SP)
-- ✅ Sprint 2: API Client & Job Management (85 SP)
-- 📋 Sprint 3: Core Tools (Mandatory) (90 SP) - NEXT
+### Core Trading & Analysis
+1. finnhub_stock_market_data (8 ops)
+2. finnhub_technical_analysis (4 ops)
+3. finnhub_news_sentiment (4 ops)
 
-### Story Points Progress
-- **Completed:** 175 SP
-- **Remaining:** 415 SP
-- **Total:** 590 SP
-- **Progress:** 30%
+### Fundamentals & Analysis
+4. finnhub_stock_fundamentals (6 ops)
+5. finnhub_stock_estimates (5 ops)
+6. finnhub_stock_ownership (4 ops)
+7. finnhub_alternative_data (4 ops)
+8. finnhub_sec_filings (3 ops)
 
-### Test Metrics
-- **Total Tests:** 194 (73 Sprint 1 + 121 Sprint 2)
-- **Pass Rate:** 100%
-- **Coverage:** 80-100% per module
-- **Quality:** Zero linting errors/warnings
+### Multi-Asset Data
+9. finnhub_crypto_data (4 ops)
+10. finnhub_forex_data (4 ops)
+11. finnhub_calendar_data (4 ops)
+12. finnhub_market_events (3 ops)
+
+### Management Tools
+13. finnhub_project_create
+14. finnhub_project_list
+15. finnhub_job_status
+
+---
+
+## Quality Assurance
+
+### Test Suite
+- 625 tests passing
+- 88.73% overall coverage
+- 90%+ coverage on tools
+- 100% coverage on core modules
+- Zero linting errors
 
 ### Code Quality
-- ✅ All code formatted with ruff
-- ✅ All code passing linting checks
-- ✅ Pre-commit hooks enforcing standards
-- ✅ Comprehensive test coverage
-- ✅ Type safety with Pydantic
-
-### Next Milestone
-**Sprint 3 completion** will deliver:
-- 3 mandatory MCP tools (technical analysis, market data, news/sentiment)
-- Complete API endpoint modules for core operations
-- Pydantic models for all responses
-- 90%+ test coverage
-- End-to-end tool functionality
+- Ruff linting and formatting
+- Type safety with Pydantic
+- Async/await throughout
+- Comprehensive error handling
 
 ---
 
-## Velocity Tracking
+## Repository Structure
 
-| Sprint | Target SP | Actual SP | Status |
-|--------|-----------|-----------|---------|
-| Sprint 1 | 90 | 90 | ✅ Complete |
-| Sprint 2 | 85 | 85 | ✅ Complete |
-| Sprint 3 | 90 | - | 📋 Planned |
-| Sprint 4 | 85 | - | Future |
-| Sprint 5 | 90 | - | Future |
-| Sprint 6 | 80 | - | Future |
-| Sprint 7 | 70 | - | Future |
+```
+mcp-finnhub/
+├── src/mcp_finnhub/     # Source code
+│   ├── api/             # API client, endpoints, models
+│   ├── tools/           # 15 MCP tools
+│   ├── jobs/            # Background job system
+│   ├── utils/           # Utilities
+│   └── transports/      # STDIO transport
+├── tests/               # 625 tests
+├── docs/                # Documentation
+└── examples/            # Usage examples
+```
 
-**Average Velocity:** 87.5 SP per sprint (target: 70-90 SP) ✅
+---
+
+## Maintenance Notes
+
+### Known Behaviors
+- /indicator endpoint redirects to /stock/candle (handled by follow_redirects)
+- Some premium endpoints return 403 on free tier (expected)
+
+### Future Enhancements (Optional)
+- Add more operation examples for better AI discovery
+- Consider list_all_tools meta operation
+- API key validation on startup
+- PyPI publication
+
+---
+
+## Version History
+
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0.0 | 2025-11-18 | First stable release |
+| 1.0.1 | 2025-11-20 | AI-friendly errors, help discovery, redirect fix |
+
+---
+
+**This project is production-ready and in maintenance phase.**

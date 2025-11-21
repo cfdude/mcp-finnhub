@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2024-11-18
+## [1.0.1] - 2025-11-20
+
+### Added
+- **AI-friendly structured error responses** - Errors now return JSON with error type, message, valid operations, required/optional params, and examples
+- **Help/discovery operation** - All tools now support `operation="help"` to discover available operations and parameters
+- **Comprehensive operation examples** - Added examples for all 53 operations across 12 data tools
+
+### Fixed
+- **HTTP redirect handling** - Added `follow_redirects=True` to httpx client, fixing /indicator endpoint redirect to /stock/candle
+- **Post-market session validation** - Added "post-market" to valid MarketStatusResponse sessions
+- **Technical analysis operation names** - Corrected operation names in examples (scan_patterns, support_resistance, aggregate_signals, get_indicator)
+
+### Changed
+- Rate limit documentation updated for Basic tier (150 calls/min)
+- Error handling now returns structured dict instead of raising exceptions for better AI agent UX
+
+### Removed
+- Obsolete development files (TEST_PLAN.md, test_results.txt, SPRINT_5_PLAN.md, SPRINT_6_PLAN.md)
+
+### Metrics
+- 625 tests passing (up from 584)
+- 88.25% coverage (up from 83%)
+- Zero linting errors
+
+## [1.0.0] - 2025-11-18
 
 ### Release Notes
 

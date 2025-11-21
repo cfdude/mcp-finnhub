@@ -2,18 +2,17 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from mcp_finnhub.config import AppConfig
 from mcp_finnhub.server import ServerContext
 from mcp_finnhub.tools.project_create import finnhub_project_create
 from mcp_finnhub.tools.project_list import finnhub_project_list
-
-if TYPE_CHECKING:
-    pass
 
 
 @pytest.fixture

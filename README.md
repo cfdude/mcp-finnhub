@@ -18,6 +18,8 @@ Model Context Protocol (MCP) server providing comprehensive access to [Finnhub](
 - **Background job processing** for large datasets
 - **Smart output handling** with token estimation
 - **Configurable tools** - enable only what you need
+- **AI-friendly errors** - Structured error responses with guidance
+- **Built-in help** - Every tool supports `operation="help"` for discovery
 
 ## Quick Start
 
@@ -38,7 +40,7 @@ pip install mcp-finnhub
 #### Option 2: Install from source
 
 ```bash
-git clone https://github.com/yourusername/mcp-finnhub.git
+git clone https://github.com/cfdude/mcp-finnhub.git
 cd mcp-finnhub
 pip install -e .
 ```
@@ -175,11 +177,36 @@ FINNHUB_ENABLE_NEWS_SENTIMENT=true
 
 ## Rate Limits
 
-- **Free tier**: 30 requests/minute, 250 requests/day
-- **Premium tier**: 300 requests/minute, no daily limit
+- **Free tier**: 60 requests/minute
+- **Basic tier**: 150 requests/minute ($49.99/month)
+- **Premium tier**: 300 requests/minute
 - **Enterprise tier**: Custom limits
 
 mcp-finnhub automatically handles rate limiting with exponential backoff and retry logic.
+
+## AI Agent Features
+
+### Help/Discovery
+
+Every tool supports `operation="help"` to discover available operations:
+
+```python
+finnhub_stock_fundamentals(operation="help")
+# Returns all operations with required/optional params and examples
+```
+
+### Structured Errors
+
+Errors return actionable JSON instead of stack traces:
+
+```json
+{
+  "error": "invalid_operation",
+  "message": "Operation 'get_data' not found",
+  "valid_operations": ["get_basic_financials", "get_dividends", ...],
+  "tool": "finnhub_stock_fundamentals"
+}
+```
 
 ## Storage Structure
 
@@ -205,7 +232,7 @@ FINNHUB_STORAGE_DIR/
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/mcp-finnhub.git
+git clone https://github.com/cfdude/mcp-finnhub.git
 cd mcp-finnhub
 
 # Install with dev dependencies
