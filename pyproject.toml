@@ -23,8 +23,9 @@ keywords = [
     "claude",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -52,11 +53,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/robsherman/mcp-finnhub"
-Documentation = "https://github.com/robsherman/mcp-finnhub/blob/main/README.md"
-Repository = "https://github.com/robsherman/mcp-finnhub"
-Issues = "https://github.com/robsherman/mcp-finnhub/issues"
-Changelog = "https://github.com/robsherman/mcp-finnhub/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/cfdude/mcp-finnhub"
+Documentation = "https://github.com/cfdude/mcp-finnhub/blob/main/README.md"
+Repository = "https://github.com/cfdude/mcp-finnhub"
+Issues = "https://github.com/cfdude/mcp-finnhub/issues"
+Changelog = "https://github.com/cfdude/mcp-finnhub/blob/main/CHANGELOG.md"
 
 [project.scripts]
 mcp-finnhub = "mcp_finnhub.__main__:main"
