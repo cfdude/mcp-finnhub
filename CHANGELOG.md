@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-20
+
+### Added
+- **Smart output routing for large data responses** - Automatically detects when API responses exceed token limits (75K default) and saves to disk instead of truncating
+- **Automatic CSV export** - Large list data saved as CSV files in project-specific directories (`finnhub-data/project/exports/`)
+- **User notification** - Response includes file path, token counts, record count, and truncated preview
+- **Project-based organization** - Use `project="my-project"` parameter to organize exports by project
+
+### Changed
+- All 12 tool wrappers now route results through `ResultOutputHandler`
+- `_execute_tool_operation()` accepts context for output routing
+- Token estimation uses tiktoken for accurate GPT-4 token counting
+
+### Technical
+- Implemented `ResultOutputHandler.route_result()` with JSON/CSV writing
+- Added `route_tool_result()` helper in `_common.py`
+- Preview generation with intelligent truncation
+
 ## [1.0.1] - 2025-11-20
 
 ### Added
