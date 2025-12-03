@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2025-12-02
+
+### Fixed
+- **AggregateSignalsResponse validation error** - Made `symbol` field optional since Finnhub API does not return it in the `/scan/technical-indicator` response. Symbol is now injected from the request parameters.
+
 ## [1.1.0] - 2025-11-20
 
 ### Added
