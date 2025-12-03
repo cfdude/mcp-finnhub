@@ -126,6 +126,9 @@ class TechnicalAnalysisTool:
             resolution,
         )
 
+        # Inject symbol from request (API doesn't return it)
+        response["symbol"] = symbol
+
         # Validate with Pydantic model
         model = AggregateSignalsResponse(**response)
         return model.model_dump()

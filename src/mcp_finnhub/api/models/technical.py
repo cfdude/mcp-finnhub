@@ -85,7 +85,8 @@ class TrendInfo(BaseModel):
 class AggregateSignalsResponse(BaseModel):
     """Aggregated technical indicator signals."""
 
-    symbol: str = Field(description="Stock symbol")
+    # Note: Finnhub API does not return symbol in this response
+    symbol: str | None = Field(default=None, description="Stock symbol (injected from request)")
     technicalAnalysis: TechnicalAnalysis = Field(  # noqa: N815
         description="Technical analysis summary"
     )
