@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-12-10
+
+### Added
+- **Multi-transport support** - Server now supports three transport modes:
+  - `stdio` (default): Standard input/output for Claude Desktop
+  - `http`: HTTP streaming for persistent/remote connections (recommended for Claude Code)
+  - `sse`: Server-Sent Events for legacy clients (deprecated)
+- **FastMCP-based server** - Refactored to use MCP SDK's FastMCP for cleaner transport handling
+- **CLI transport options** - New command-line arguments:
+  - `--transport {stdio,http,sse}` - Select transport mode
+  - `--host HOST` - Bind host for HTTP/SSE (default: 127.0.0.1)
+  - `--port PORT` - Bind port for HTTP/SSE (default: 8000)
+  - `--log-level {DEBUG,INFO,WARNING,ERROR}` - Set log verbosity
+
+### Changed
+- Bumped `mcp` dependency from `>=0.1.0` to `>=1.0.0` for FastMCP support
+- Added `uvicorn>=0.30.0` and `starlette>=0.38.0` dependencies for HTTP transport
+- Server now uses lifespan context manager for proper resource cleanup
+
+### Technical
+- New `fastmcp_server.py` with `@mcp.tool()` decorated tool functions
+- Tools return JSON strings (FastMCP convention) instead of dicts
+- Global `ServerContext` managed via lifespan for async resource handling
+
 ## [1.1.1] - 2025-12-02
 
 ### Fixed
