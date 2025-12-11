@@ -183,7 +183,11 @@ class TechnicalAnalysisTool:
 
         # Validate with Pydantic model
         model = SupportResistanceResponse(**response)
-        return model.model_dump()
+        result = model.model_dump()
+        # Add request context to response for clarity
+        result["symbol"] = symbol
+        result["resolution"] = resolution
+        return result
 
     async def execute(
         self,

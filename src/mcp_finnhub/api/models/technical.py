@@ -132,35 +132,13 @@ class PatternRecognitionResponse(BaseModel):
         return len(self.patterns)
 
 
-class SupportResistanceLevel(BaseModel):
-    """Support or resistance level."""
-
-    level: float = Field(description="Price level")
-    type: str = Field(description="Level type: support or resistance")
-
-    @field_validator("type")
-    @classmethod
-    def validate_type(cls, v: str) -> str:
-        """Validate level type."""
-        valid_types = {"support", "resistance"}
-        if v.lower() not in valid_types:
-            raise ValueError(f"Type must be one of {valid_types}")
-        return v.lower()
-
-
 class SupportResistanceResponse(BaseModel):
-    """Support and resistance levels response."""
+    """Support and resistance levels response.
 
-    symbol: str = Field(description="Stock symbol")
-    resolution: str = Field(description="Time resolution")
-    levels: list[SupportResistanceLevel] = Field(description="Support/resistance levels")
+    Note: The Finnhub API returns only a list of price levels without
+    distinguishing between support and resistance. The levels are sorted
+    and typically represent key price points where the stock has shown
+    historical support or resistance.
+    """
 
-    @property
-    def support_levels(self) -> list[float]:
-        """Get support levels."""
-        return [lvl.level for lvl in self.levels if lvl.type == "support"]
-
-    @property
-    def resistance_levels(self) -> list[float]:
-        """Get resistance levels."""
-        return [lvl.level for lvl in self.levels if lvl.type == "resistance"]
+    levels: list[float] = Field(description="Support/resistance price levels")

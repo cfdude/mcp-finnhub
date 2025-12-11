@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2025-12-11
+
+### Fixed
+- **SupportResistanceResponse validation error** - Fixed Pydantic model to match actual Finnhub API response. The API returns `{"levels": [float, ...]}` (list of price levels), not typed support/resistance objects. Removed incorrect `symbol`, `resolution`, and `SupportResistanceLevel` model fields. Tool now injects `symbol` and `resolution` into the response for context.
+
 ## [1.2.0] - 2025-12-10
 
 ### Added
