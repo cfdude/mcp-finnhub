@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2025-12-11
+
+### Added
+- **Context window management for get_basic_financials** - Added `include_series` (default: False) and `series_limit` parameters to prevent ~100K+ token responses from overwhelming AI context windows. Historical series data is now excluded by default.
+
 ## [1.2.1] - 2025-12-11
 
 ### Fixed

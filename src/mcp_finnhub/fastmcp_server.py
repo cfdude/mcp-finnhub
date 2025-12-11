@@ -189,6 +189,8 @@ async def finnhub_stock_fundamentals(
     freq: str | None = None,
     from_date: str | None = None,
     to_date: str | None = None,
+    include_series: bool | None = None,
+    series_limit: int | None = None,
     project: str | None = None,
 ) -> str:
     """Financial statements, earnings, dividends, and splits.
@@ -200,6 +202,10 @@ async def finnhub_stock_fundamentals(
     - get_dividends: Get dividend history
     - get_splits: Get stock split history
     - get_revenue_breakdown: Get revenue by segment/geography
+
+    For get_basic_financials:
+    - include_series: Include historical time series (default: False, saves ~100K+ tokens)
+    - series_limit: Max periods per metric when include_series=True (e.g., 4 = last 4 periods)
     """
     from mcp_finnhub.tools import finnhub_stock_fundamentals as handler
 
@@ -211,6 +217,8 @@ async def finnhub_stock_fundamentals(
             "freq": freq,
             "from_date": from_date,
             "to_date": to_date,
+            "include_series": include_series,
+            "series_limit": series_limit,
             "project": project,
         }.items()
         if v is not None
