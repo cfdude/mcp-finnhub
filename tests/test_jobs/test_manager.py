@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
@@ -133,7 +134,9 @@ class TestJobManager:
     def test_list_jobs_all(self, manager: JobManager):
         """Test listing all jobs."""
         job1 = manager.create_job("test1")
+        time.sleep(0.01)  # Ensure different timestamps on Windows
         job2 = manager.create_job("test2")
+        time.sleep(0.01)
         job3 = manager.create_job("test3")
 
         jobs = manager.list_jobs()
