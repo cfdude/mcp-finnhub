@@ -222,15 +222,9 @@ class TestTechnicalAnalysisToolSupportResistance:
     @respx.mock
     async def test_support_resistance(self, test_config: AppConfig):
         """Test getting support/resistance levels."""
+        # Finnhub API returns just a list of price levels (floats)
         levels_data = {
-            "symbol": "AAPL",
-            "resolution": "D",
-            "levels": [
-                {"level": 145.0, "type": "support"},
-                {"level": 150.0, "type": "support"},
-                {"level": 160.0, "type": "resistance"},
-                {"level": 165.0, "type": "resistance"},
-            ],
+            "levels": [145.0, 150.0, 160.0, 165.0],
         }
 
         respx.get("https://finnhub.io/api/v1/scan/support-resistance").mock(
@@ -244,8 +238,11 @@ class TestTechnicalAnalysisToolSupportResistance:
                 resolution="D",
             )
 
+        # symbol and resolution are added by the tool for context
         assert result["symbol"] == "AAPL"
+        assert result["resolution"] == "D"
         assert len(result["levels"]) == 4
+        assert result["levels"] == [145.0, 150.0, 160.0, 165.0]
 
 
 class TestTechnicalAnalysisToolExecute:
@@ -330,13 +327,9 @@ class TestTechnicalAnalysisToolExecute:
     @respx.mock
     async def test_execute_support_resistance(self, test_config: AppConfig):
         """Test execute routes to support_resistance."""
+        # Finnhub API returns just a list of price levels (floats)
         levels_data = {
-            "symbol": "AAPL",
-            "resolution": "D",
-            "levels": [
-                {"level": 145.0, "type": "support"},
-                {"level": 160.0, "type": "resistance"},
-            ],
+            "levels": [145.0, 160.0],
         }
 
         respx.get("https://finnhub.io/api/v1/scan/support-resistance").mock(
@@ -351,7 +344,10 @@ class TestTechnicalAnalysisToolExecute:
                 resolution="D",
             )
 
+        # symbol and resolution are added by the tool for context
         assert result["symbol"] == "AAPL"
+        assert result["resolution"] == "D"
+        assert result["levels"] == [145.0, 160.0]
 
     async def test_execute_invalid_operation(self, test_config: AppConfig):
         """Test execute rejects invalid operation."""

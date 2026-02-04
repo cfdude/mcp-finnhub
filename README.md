@@ -253,11 +253,38 @@ ruff format .
 export FINNHUB_API_KEY=your_api_key
 export FINNHUB_STORAGE_DIR=/tmp/finnhub-data
 
-# Run the MCP server
+# Run with STDIO transport (default, for Claude Desktop)
 mcp-finnhub
+
+# Run with HTTP streaming (recommended for persistent/remote connections)
+mcp-finnhub --transport http --port 8000
+
+# Run with SSE transport (deprecated, use HTTP instead)
+mcp-finnhub --transport sse --port 8000
+
+# Custom host binding for network access
+mcp-finnhub --transport http --host 0.0.0.0 --port 8125
 ```
 
-The server will listen on stdin/stdout for JSON-RPC requests following the MCP protocol.
+#### Transport Options
+
+| Transport | Use Case | Command |
+|-----------|----------|---------|
+| `stdio` | Claude Desktop, local MCP clients | `mcp-finnhub` (default) |
+| `http` | Remote connections, persistent server, Claude Code | `mcp-finnhub --transport http --port 8000` |
+| `sse` | Legacy SSE clients (deprecated) | `mcp-finnhub --transport sse --port 8000` |
+
+#### Running as a Persistent Service
+
+For HTTP transport, you can run the server as a background service:
+
+```bash
+# Using nohup (simple)
+nohup mcp-finnhub --transport http --port 8000 > finnhub.log 2>&1 &
+
+# Using systemd (Linux)
+# See docs/DEPLOYMENT.md for service file examples
+```
 
 ### Testing with MCP Inspector
 
@@ -271,9 +298,9 @@ mcp-inspector mcp-finnhub
 
 ## Architecture
 
+- **FastMCP Server**: Built on MCP SDK's FastMCP for multi-transport support
 - **ServerContext**: Dependency injection container managing client and utilities
-- **Tool Registry**: Dynamic tool registration with enable/disable support
-- **STDIO Transport**: JSON-RPC over stdin/stdout implementing MCP 2024-11-05
+- **Multi-Transport**: STDIO (default), HTTP streaming, and SSE transports
 - **Async Job Processing**: Background workers for large dataset operations
 - **Type Safety**: Pydantic models for all API requests/responses
 

@@ -111,15 +111,24 @@ class StockFundamentalsTool:
         self,
         symbol: str,
         metric: str = "all",
+        include_series: bool = False,
+        series_limit: int | None = None,
     ) -> dict[str, Any]:
         """Get basic financial metrics.
 
         Args:
             symbol: Stock symbol
             metric: Metric type (all, price, valuation, margin, growth)
+            include_series: Whether to include historical series data (default: False).
+                           Series data can be very large (100K+ tokens) and may exceed
+                           context limits. Set to True only when historical trends needed.
+            series_limit: Maximum number of periods to include per metric in series
+                         (e.g., 4 = last 4 quarters/years). Only applies when
+                         include_series=True. Default: None (all periods).
 
         Returns:
-            Basic financial metrics
+            Basic financial metrics. By default returns only current 'metric' values.
+            With include_series=True, also includes historical 'series' data.
         """
         self.validate_metric(metric)
 
@@ -131,7 +140,41 @@ class StockFundamentalsTool:
 
         # Validate with Pydantic model
         model = BasicFinancialsResponse(**response)
-        return model.model_dump()
+        result = model.model_dump()
+
+        # Handle series exclusion/limiting for context window management
+        if not include_series:
+            # Remove series to keep response small (default behavior)
+            result.pop("series", None)
+        elif series_limit is not None and result.get("series"):
+            # Limit the number of periods in each series metric
+            result["series"] = self._limit_series_periods(result["series"], series_limit)
+
+        return result
+
+    def _limit_series_periods(self, series: dict[str, Any], limit: int) -> dict[str, Any]:
+        """Limit the number of periods in series data.
+
+        Args:
+            series: Series data with annual/quarterly nested dicts
+            limit: Maximum periods per metric
+
+        Returns:
+            Series with limited periods
+        """
+        limited = {}
+        for period_type, metrics in series.items():
+            if isinstance(metrics, dict):
+                limited[period_type] = {}
+                for metric_name, values in metrics.items():
+                    if isinstance(values, list):
+                        # Take only the most recent N periods
+                        limited[period_type][metric_name] = values[:limit]
+                    else:
+                        limited[period_type][metric_name] = values
+            else:
+                limited[period_type] = metrics
+        return limited
 
     async def get_reported_financials(
         self,

@@ -12,7 +12,6 @@ from mcp_finnhub.api.models.technical import (
     Pattern,
     PatternRecognitionResponse,
     SignalCount,
-    SupportResistanceLevel,
     SupportResistanceResponse,
     TechnicalAnalysis,
     TrendInfo,
@@ -264,79 +263,33 @@ class TestPatternRecognitionResponse:
         assert response.pattern_count == 2
 
 
-class TestSupportResistanceLevel:
-    """Tests for SupportResistanceLevel model."""
-
-    def test_valid_support_level(self):
-        """Test creating valid support level."""
-        data = {"level": 145.0, "type": "support"}
-        level = SupportResistanceLevel(**data)
-        assert level.level == 145.0
-        assert level.type == "support"
-
-    def test_valid_resistance_level(self):
-        """Test creating valid resistance level."""
-        data = {"level": 160.0, "type": "resistance"}
-        level = SupportResistanceLevel(**data)
-        assert level.type == "resistance"
-
-    def test_type_case_normalization(self):
-        """Test type is normalized to lowercase."""
-        data = {"level": 150.0, "type": "SUPPORT"}
-        level = SupportResistanceLevel(**data)
-        assert level.type == "support"
-
-    def test_invalid_type(self):
-        """Test validation fails for invalid type."""
-        with pytest.raises(ValidationError):
-            SupportResistanceLevel(level=150.0, type="invalid")
-
-
 class TestSupportResistanceResponse:
-    """Tests for SupportResistanceResponse model."""
+    """Tests for SupportResistanceResponse model.
+
+    Note: The Finnhub API returns only a list of price levels (floats)
+    without distinguishing between support and resistance. The levels
+    represent key price points where the stock has shown historical
+    support or resistance.
+    """
 
     def test_valid_response(self):
         """Test creating valid support/resistance response."""
+        # Finnhub API returns just a list of price levels
         data = {
-            "symbol": "AAPL",
-            "resolution": "D",
-            "levels": [
-                {"level": 145.0, "type": "support"},
-                {"level": 150.0, "type": "support"},
-                {"level": 160.0, "type": "resistance"},
-                {"level": 165.0, "type": "resistance"},
-            ],
+            "levels": [145.0, 150.0, 160.0, 165.0],
         }
         response = SupportResistanceResponse(**data)
-        assert response.symbol == "AAPL"
         assert len(response.levels) == 4
+        assert response.levels == [145.0, 150.0, 160.0, 165.0]
 
-    def test_support_levels_property(self):
-        """Test support_levels property filters support levels."""
-        data = {
-            "symbol": "AAPL",
-            "resolution": "D",
-            "levels": [
-                {"level": 145.0, "type": "support"},
-                {"level": 150.0, "type": "support"},
-                {"level": 160.0, "type": "resistance"},
-            ],
-        }
+    def test_empty_levels(self):
+        """Test response with empty levels list."""
+        data = {"levels": []}
         response = SupportResistanceResponse(**data)
-        support = response.support_levels
-        assert support == [145.0, 150.0]
+        assert response.levels == []
 
-    def test_resistance_levels_property(self):
-        """Test resistance_levels property filters resistance levels."""
-        data = {
-            "symbol": "AAPL",
-            "resolution": "D",
-            "levels": [
-                {"level": 145.0, "type": "support"},
-                {"level": 160.0, "type": "resistance"},
-                {"level": 165.0, "type": "resistance"},
-            ],
-        }
+    def test_single_level(self):
+        """Test response with single level."""
+        data = {"levels": [155.25]}
         response = SupportResistanceResponse(**data)
-        resistance = response.resistance_levels
-        assert resistance == [160.0, 165.0]
+        assert response.levels == [155.25]

@@ -110,13 +110,18 @@ class TestStockFundamentalsToolGetBasicFinancials:
 
     @respx.mock
     async def test_get_basic_financials(self, test_config: AppConfig):
-        """Test getting basic financials."""
+        """Test getting basic financials - excludes series by default."""
         financials_data = {
             "symbol": "AAPL",
             "metric": {
                 "marketCapitalization": 2500000,
                 "peBasicExclExtraTTM": 25.5,
                 "roeTTM": 0.85,
+            },
+            "series": {
+                "annual": {
+                    "currentRatio": [{"period": "2023", "v": 1.5}],
+                },
             },
         }
 
@@ -130,6 +135,82 @@ class TestStockFundamentalsToolGetBasicFinancials:
 
         assert result["symbol"] == "AAPL"
         assert "metric" in result
+        # Series should be excluded by default for context window management
+        assert "series" not in result
+
+    @respx.mock
+    async def test_get_basic_financials_with_series(self, test_config: AppConfig):
+        """Test getting basic financials with series included."""
+        financials_data = {
+            "symbol": "AAPL",
+            "metric": {
+                "marketCapitalization": 2500000,
+            },
+            "series": {
+                "annual": {
+                    "currentRatio": [
+                        {"period": "2023", "v": 1.5},
+                        {"period": "2022", "v": 1.4},
+                    ],
+                },
+            },
+        }
+
+        respx.get("https://finnhub.io/api/v1/stock/metric").mock(
+            return_value=httpx.Response(200, json=financials_data)
+        )
+
+        async with FinnhubClient(test_config) as client:
+            tool = StockFundamentalsTool(client)
+            result = await tool.get_basic_financials(symbol="AAPL", include_series=True)
+
+        assert result["symbol"] == "AAPL"
+        assert "metric" in result
+        assert "series" in result
+        assert "annual" in result["series"]
+
+    @respx.mock
+    async def test_get_basic_financials_with_series_limit(self, test_config: AppConfig):
+        """Test getting basic financials with limited series periods."""
+        financials_data = {
+            "symbol": "AAPL",
+            "metric": {
+                "marketCapitalization": 2500000,
+            },
+            "series": {
+                "annual": {
+                    "currentRatio": [
+                        {"period": "2023", "v": 1.5},
+                        {"period": "2022", "v": 1.4},
+                        {"period": "2021", "v": 1.3},
+                        {"period": "2020", "v": 1.2},
+                    ],
+                    "grossMargin": [
+                        {"period": "2023", "v": 0.45},
+                        {"period": "2022", "v": 0.44},
+                        {"period": "2021", "v": 0.43},
+                    ],
+                },
+            },
+        }
+
+        respx.get("https://finnhub.io/api/v1/stock/metric").mock(
+            return_value=httpx.Response(200, json=financials_data)
+        )
+
+        async with FinnhubClient(test_config) as client:
+            tool = StockFundamentalsTool(client)
+            result = await tool.get_basic_financials(
+                symbol="AAPL", include_series=True, series_limit=2
+            )
+
+        assert result["symbol"] == "AAPL"
+        assert "series" in result
+        # Should only have 2 periods per metric
+        assert len(result["series"]["annual"]["currentRatio"]) == 2
+        assert len(result["series"]["annual"]["grossMargin"]) == 2
+        # Should be most recent periods (first in list)
+        assert result["series"]["annual"]["currentRatio"][0]["period"] == "2023"
 
     @respx.mock
     async def test_get_basic_financials_with_invalid_metric(self, test_config: AppConfig):

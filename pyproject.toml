@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcp-finnhub"
-version = "1.1.1"
+version = "1.2.2"
 description = "Model Context Protocol server for Finnhub financial market data API"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -34,12 +34,15 @@ classifiers = [
 ]
 
 dependencies = [
-    "mcp>=0.1.0",
+    "mcp>=1.0.0",
     "httpx>=0.24.0,<1.0.0",
     "pydantic>=2.0.0,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
     "python-dotenv>=1.0.0",
     "tiktoken>=0.5.0,<1.0.0",
+    # HTTP/SSE transport dependencies
+    "uvicorn>=0.30.0",
+    "starlette>=0.38.0",
 ]
 
 [project.optional-dependencies]
