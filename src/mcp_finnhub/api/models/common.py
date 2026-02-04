@@ -7,13 +7,13 @@ Covers the most frequently used endpoints: quotes, candles, news, company profil
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
 
-class Resolution(str, Enum):
+class Resolution(StrEnum):
     """Supported candle resolutions."""
 
     ONE_MIN = "1"
