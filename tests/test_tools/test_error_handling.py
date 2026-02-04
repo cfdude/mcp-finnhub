@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import tempfile
 import pytest
 
 from mcp_finnhub.tools import (
@@ -144,7 +145,7 @@ class TestExecuteToolOperation:
         # because wrong parameters are passed
         context = build_server_context(
             finnhub_api_key="test_key",
-            storage_directory="/tmp/test",
+            storage_directory=tempfile.gettempdir(),
         )
 
         try:
@@ -174,7 +175,7 @@ class TestExecuteToolOperation:
 
         context = build_server_context(
             finnhub_api_key="test_key",
-            storage_directory="/tmp/test",
+            storage_directory=tempfile.gettempdir(),
         )
 
         try:
