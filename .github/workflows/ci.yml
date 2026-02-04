@@ -57,6 +57,7 @@ jobs:
           uv pip install -e ".[dev]"
 
       - name: Run tests with coverage
+        shell: bash
         run: |
           uv run pytest \
             --cov=mcp_finnhub \
