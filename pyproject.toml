@@ -43,6 +43,8 @@ dependencies = [
     # HTTP/SSE transport dependencies
     "uvicorn>=0.30.0",
     "starlette>=0.38.0",
+    "pytest>=7.4.4",
+    "ruff>=0.15.0",
 ]
 
 [project.optional-dependencies]
@@ -183,3 +185,10 @@ skip_covered = false
 
 [tool.coverage.html]
 directory = "htmlcov"
+
+[dependency-groups]
+dev = [
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "respx>=0.20.0",
+]

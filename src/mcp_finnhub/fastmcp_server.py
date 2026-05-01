@@ -15,37 +15,21 @@ import sys
 from contextlib import asynccontextmanager
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import Context, FastMCP
 
 from mcp_finnhub.config import load_config
 from mcp_finnhub.server import ServerContext
-
-# Global server context - initialized in lifespan
-_context: ServerContext | None = None
-
-
-def get_context() -> ServerContext:
-    """Get the global server context.
-
-    Raises:
-        RuntimeError: If context not initialized
-    """
-    if _context is None:
-        raise RuntimeError("Server context not initialized")
-    return _context
 
 
 @asynccontextmanager
 async def lifespan(app: FastMCP):
     """Manage server lifecycle - initialize and cleanup resources."""
-    global _context
     config = load_config()
-    _context = ServerContext(config)
+    ctx = ServerContext(config)
     try:
-        yield
+        yield ctx
     finally:
-        await _context.aclose()
-        _context = None
+        await ctx.aclose()
 
 
 # Initialize FastMCP server
@@ -64,6 +48,7 @@ mcp = FastMCP(
 @mcp.tool()
 async def finnhub_stock_market_data(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     exchange: str | None = None,
     query: str | None = None,
@@ -88,7 +73,7 @@ async def finnhub_stock_market_data(
     """
     from mcp_finnhub.tools import finnhub_stock_market_data as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -104,13 +89,14 @@ async def finnhub_stock_market_data(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_news_sentiment(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     category: str | None = None,
     from_date: str | None = None,
@@ -127,7 +113,7 @@ async def finnhub_news_sentiment(
     """
     from mcp_finnhub.tools import finnhub_news_sentiment as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -139,13 +125,14 @@ async def finnhub_news_sentiment(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_technical_analysis(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     resolution: str | None = None,
     indicator: str | None = None,
@@ -164,7 +151,7 @@ async def finnhub_technical_analysis(
     """
     from mcp_finnhub.tools import finnhub_technical_analysis as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -178,13 +165,14 @@ async def finnhub_technical_analysis(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_stock_fundamentals(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     freq: str | None = None,
     from_date: str | None = None,
@@ -209,7 +197,7 @@ async def finnhub_stock_fundamentals(
     """
     from mcp_finnhub.tools import finnhub_stock_fundamentals as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -223,13 +211,14 @@ async def finnhub_stock_fundamentals(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_stock_estimates(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     freq: str | None = None,
     project: str | None = None,
@@ -245,7 +234,7 @@ async def finnhub_stock_estimates(
     """
     from mcp_finnhub.tools import finnhub_stock_estimates as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -255,13 +244,14 @@ async def finnhub_stock_estimates(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_stock_ownership(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     cik: str | None = None,
     project: str | None = None,
@@ -276,7 +266,7 @@ async def finnhub_stock_ownership(
     """
     from mcp_finnhub.tools import finnhub_stock_ownership as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -286,13 +276,14 @@ async def finnhub_stock_ownership(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_alternative_data(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     project: str | None = None,
 ) -> str:
@@ -306,7 +297,7 @@ async def finnhub_alternative_data(
     """
     from mcp_finnhub.tools import finnhub_alternative_data as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -315,13 +306,14 @@ async def finnhub_alternative_data(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_sec_filings(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     access_number: str | None = None,
     freq: str | None = None,
@@ -336,7 +328,7 @@ async def finnhub_sec_filings(
     """
     from mcp_finnhub.tools import finnhub_sec_filings as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -347,13 +339,14 @@ async def finnhub_sec_filings(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_crypto_data(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     exchange: str | None = None,
     resolution: str | None = None,
@@ -371,7 +364,7 @@ async def finnhub_crypto_data(
     """
     from mcp_finnhub.tools import finnhub_crypto_data as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -384,13 +377,14 @@ async def finnhub_crypto_data(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_forex_data(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     exchange: str | None = None,
     base: str | None = None,
@@ -409,7 +403,7 @@ async def finnhub_forex_data(
     """
     from mcp_finnhub.tools import finnhub_forex_data as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -423,13 +417,14 @@ async def finnhub_forex_data(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_calendar_data(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     from_date: str | None = None,
     to_date: str | None = None,
@@ -445,7 +440,7 @@ async def finnhub_calendar_data(
     """
     from mcp_finnhub.tools import finnhub_calendar_data as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -456,13 +451,14 @@ async def finnhub_calendar_data(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_market_events(
     operation: str,
+    ctx: Context,
     symbol: str | None = None,
     exchange: str | None = None,
     project: str | None = None,
@@ -476,7 +472,7 @@ async def finnhub_market_events(
     """
     from mcp_finnhub.tools import finnhub_market_events as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs = {
         k: v
         for k, v in {
@@ -486,7 +482,7 @@ async def finnhub_market_events(
         }.items()
         if v is not None
     }
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
@@ -498,6 +494,7 @@ async def finnhub_market_events(
 @mcp.tool()
 async def finnhub_project_create(
     operation: str,
+    ctx: Context,
     name: str | None = None,
     description: str | None = None,
 ) -> str:
@@ -508,19 +505,20 @@ async def finnhub_project_create(
     """
     from mcp_finnhub.tools import finnhub_project_create as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs: dict[str, Any] = {}
     if name is not None:
         kwargs["name"] = name
     if description is not None:
         kwargs["description"] = description
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_project_list(
     operation: str,
+    ctx: Context,
 ) -> str:
     """List all project workspaces with statistics.
 
@@ -529,14 +527,15 @@ async def finnhub_project_list(
     """
     from mcp_finnhub.tools import finnhub_project_list as handler
 
-    ctx = get_context()
-    result = await handler(ctx, operation)
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
+    result = await handler(server_ctx, operation)
     return json.dumps(result, indent=2, default=str)
 
 
 @mcp.tool()
 async def finnhub_job_status(
     operation: str,
+    ctx: Context,
     job_id: str | None = None,
 ) -> str:
     """Check status of background jobs.
@@ -547,11 +546,11 @@ async def finnhub_job_status(
     """
     from mcp_finnhub.tools import finnhub_job_status as handler
 
-    ctx = get_context()
+    server_ctx: ServerContext = ctx.request_context.lifespan_context
     kwargs: dict[str, Any] = {}
     if job_id is not None:
         kwargs["job_id"] = job_id
-    result = await handler(ctx, operation, **kwargs)
+    result = await handler(server_ctx, operation, **kwargs)
     return json.dumps(result, indent=2, default=str)
 
 

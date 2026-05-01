@@ -412,8 +412,8 @@ async def test_quote_api_error(server_context):
 ### Setup
 
 ```bash
-# Install pre-commit
-pip install pre-commit
+# Install pre-commit (adds to dev dependencies)
+uv add --dev pre-commit
 
 # Install git hooks
 pre-commit install
@@ -497,7 +497,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install uv
-          uv pip install -e ".[dev]"
+          uv sync --all-extras
 
       - name: Run Ruff linter
         run: ruff check .

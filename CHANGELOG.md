@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Idiomatic FastMCP context passing** - Removed global `_context` variable and `get_context()` helper. `lifespan` now yields `ServerContext` directly; all tool functions receive it via `ctx: Context` parameter and `ctx.request_context.lifespan_context`. Eliminates the race condition that existed under concurrent HTTP connections.
+
+### Fixed
+- **Missing dev dependencies** - `respx`, `pytest-asyncio`, and `pytest-cov` were declared in `[project.optional-dependencies] dev` but not installed. Added via `uv add --dev`; all 623 tests now pass.
+
 ## [1.2.2] - 2025-12-11
 
 ### Added
