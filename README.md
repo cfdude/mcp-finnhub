@@ -239,11 +239,11 @@ cd mcp-finnhub
 uv sync --all-extras
 
 # Run tests
-pytest --cov=mcp_finnhub --cov-report=term-missing
+uv run pytest --cov=mcp_finnhub --cov-report=term-missing
 
 # Lint and format
-ruff check --fix .
-ruff format .
+uv run ruff check --fix .
+uv run ruff format .
 ```
 
 ### Running Locally
