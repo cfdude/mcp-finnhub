@@ -141,6 +141,7 @@ snowflake-mcp-server/
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
+
 class AppConfig(BaseModel):
     # Required
     fred_api_key: str
@@ -190,6 +191,7 @@ ENTITLEMENT_CATEGORIES = {
     # Tools that need premium access
 }
 
+
 def register_tools(server, config):
     """Dynamically register tools based on config."""
     for name, module_path in TOOL_MODULES.items():
@@ -216,23 +218,18 @@ def register_tools(server, config):
 import httpx
 from typing import Any, Dict, Optional
 
+
 class FREDClient:
     def __init__(self, config: FREDClientConfig):
         self.api_key = config.api_key
         self.base_url = config.base_url
         self.client = httpx.AsyncClient(
             timeout=httpx.Timeout(config.timeout),
-            limits=httpx.Limits(
-                max_connections=config.max_connections
-            )
+            limits=httpx.Limits(max_connections=config.max_connections),
         )
         self.rate_limiter = RateLimiter(config.max_requests_per_minute)
 
-    async def get(
-        self,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def get(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         # Add API key
         params = params or {}
         params["api_key"] = self.api_key
@@ -242,9 +239,7 @@ class FREDClient:
 
         # Make request with retry
         response = await self._request_with_retry(
-            "GET",
-            f"{self.base_url}{endpoint}",
-            params=params
+            "GET", f"{self.base_url}{endpoint}", params=params
         )
 
         return response.json()
@@ -258,7 +253,7 @@ class FREDClient:
                 return response
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 429:  # Rate limit
-                    await asyncio.sleep(2 ** attempt)
+                    await asyncio.sleep(2**attempt)
                     continue
                 raise FREDAPIError.from_response(e.response)
 ```
@@ -289,11 +284,8 @@ SUPPORTED_OPERATIONS = [
     # ... etc
 ]
 
-async def fred_series(
-    context: ServerContext,
-    operation: str,
-    **kwargs: Any
-) -> Dict[str, Any]:
+
+async def fred_series(context: ServerContext, operation: str, **kwargs: Any) -> Dict[str, Any]:
     # Validate output options
     options, error = _common.prepare_output(kwargs)
     if error:
@@ -321,7 +313,7 @@ async def fred_series(
             options=options,
             estimated_rows=len(result.observations),
             estimated_tokens=estimated_tokens,
-            category="series"
+            category="series",
         )
 
     # ... handle other operations
@@ -346,23 +338,22 @@ def create_moving_average_tool():
         "name": "moving_average",
         "description": "Calculate moving averages (SMA, EMA, WMA, etc.)",
         "inputSchema": MOVING_AVERAGE_SCHEMA,
-        "handler": handle_moving_average
+        "handler": handle_moving_average,
     }
+
 
 # tools/moving_average_schema.py
 MOVING_AVERAGE_SCHEMA = {
     "type": "object",
     "properties": {
         "symbol": {"type": "string"},
-        "indicator": {
-            "type": "string",
-            "enum": ["SMA", "EMA", "WMA", "DEMA", "TEMA"]
-        },
+        "indicator": {"type": "string", "enum": ["SMA", "EMA", "WMA", "DEMA", "TEMA"]},
         "interval": {"type": "string"},
         "time_period": {"type": "integer"},
     },
-    "required": ["symbol", "indicator", "interval"]
+    "required": ["symbol", "indicator", "interval"],
 }
+
 
 # tools/moving_average_unified.py
 async def handle_moving_average(symbol: str, indicator: str, **params):
@@ -394,7 +385,7 @@ class ResultOutputHandler:
         csv_converter: JSONToCSVConverter,
         path_resolver: PathResolver,
         file_writer: FileWriter,
-        job_manager: JobManager
+        job_manager: JobManager,
     ):
         self.config = config
         self.token_estimator = token_estimator
@@ -414,7 +405,7 @@ class ResultOutputHandler:
         estimated_rows: Optional[int],
         estimated_tokens: Optional[int],
         subdir: Optional[str],
-        job_id: Optional[str]
+        job_id: Optional[str],
     ) -> Dict[str, Any]:
         """Smart output handling based on size and mode."""
 
@@ -432,14 +423,12 @@ class ResultOutputHandler:
 
         elif output == "file":
             # Save to file
-            file_path = await self._save_to_file(
-                data, format, project, filename, subdir
-            )
+            file_path = await self._save_to_file(data, format, project, filename, subdir)
             return {
                 "status": "success",
                 "file_path": str(file_path),
                 "format": format,
-                "rows": estimated_rows
+                "rows": estimated_rows,
             }
 ```
 
@@ -460,12 +449,9 @@ class ResultOutputHandler:
 import tiktoken
 from typing import Any, List, Dict
 
+
 class TokenEstimator:
-    def __init__(
-        self,
-        assume_context_used: float = 0.75,
-        default_safe_limit: int = 50_000
-    ):
+    def __init__(self, assume_context_used: float = 0.75, default_safe_limit: int = 50_000):
         self.encoder = tiktoken.get_encoding("cl100k_base")
         self.assume_context_used = assume_context_used
         self.safe_limit = int(default_safe_limit * (1 - assume_context_used))
@@ -474,10 +460,7 @@ class TokenEstimator:
         """Estimate tokens for list of records."""
         # Sample first few records
         sample_size = min(10, len(records))
-        sample_tokens = sum(
-            self.estimate_text(str(record))
-            for record in records[:sample_size]
-        )
+        sample_tokens = sum(self.estimate_text(str(record)) for record in records[:sample_size])
 
         # Extrapolate
         avg_tokens_per_record = sample_tokens / sample_size
@@ -511,6 +494,7 @@ class TokenEstimator:
 from datetime import datetime, timedelta
 from collections import deque
 
+
 class RateLimiter:
     """Token bucket rate limiter."""
 
@@ -540,15 +524,12 @@ class RateLimiter:
         # Record this request
         self.requests.append(now)
 
+
 # rate_limiting/circuit_breaker.py
 class CircuitBreaker:
     """Circuit breaker for failing endpoints."""
 
-    def __init__(
-        self,
-        failure_threshold: int = 5,
-        recovery_timeout: int = 60
-    ):
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 60):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.failures = 0
@@ -578,9 +559,7 @@ class CircuitBreaker:
         self.failures += 1
         if self.failures >= self.failure_threshold:
             self.state = "open"
-            self.next_attempt = datetime.now() + timedelta(
-                seconds=self.recovery_timeout
-            )
+            self.next_attempt = datetime.now() + timedelta(seconds=self.recovery_timeout)
 ```
 
 **Benefits:**
@@ -601,6 +580,7 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
+
 class JobManager:
     """Manage background jobs."""
 
@@ -614,7 +594,7 @@ class JobManager:
             job_id=f"finnhub-job-{uuid.uuid4().hex[:8]}",
             status="pending",
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         )
         self.jobs[job.job_id] = job
         return job
@@ -624,7 +604,7 @@ class JobManager:
         job_id: str,
         progress: Optional[int] = None,
         estimated_total: Optional[int] = None,
-        **metadata
+        **metadata,
     ):
         """Update job progress."""
         job = self.jobs[job_id]
@@ -657,6 +637,7 @@ class JobManager:
             if job.updated_at > cutoff or job.status == "running"
         }
 
+
 # utils/background_worker.py
 class BackgroundWorker:
     """Execute background jobs."""
@@ -678,8 +659,7 @@ class BackgroundWorker:
         if job_id in self.tasks:
             self.tasks[job_id].cancel()
             await self.job_manager.fail_job(
-                job_id,
-                {"code": "CANCELLED", "message": "Job cancelled by user"}
+                job_id, {"code": "CANCELLED", "message": "Job cancelled by user"}
             )
 ```
 
@@ -701,18 +681,14 @@ import csv
 from typing import Any, List, Dict
 from pathlib import Path
 
+
 class JSONToCSVConverter:
     """Convert JSON data to CSV with streaming support."""
 
     def __init__(self, chunk_size: int = 1000):
         self.chunk_size = chunk_size
 
-    async def convert_and_save(
-        self,
-        data: List[Dict[str, Any]],
-        file_path: Path,
-        mode: str = "w"
-    ):
+    async def convert_and_save(self, data: List[Dict[str, Any]], file_path: Path, mode: str = "w"):
         """Convert JSON records to CSV and save."""
         if not data:
             return
@@ -728,7 +704,7 @@ class JSONToCSVConverter:
                 writer.writeheader()
 
             for i in range(0, len(data), self.chunk_size):
-                chunk = data[i:i + self.chunk_size]
+                chunk = data[i : i + self.chunk_size]
                 writer.writerows(chunk)
                 # Flush periodically
                 if i % (self.chunk_size * 10) == 0:
@@ -761,11 +737,7 @@ class FinnhubAPIError(Exception):
     def to_dict(self) -> Dict[str, Any]:
         """Convert to error response format."""
         return {
-            "error": {
-                "code": self.code,
-                "message": self.message,
-                "status_code": self.status_code
-            }
+            "error": {"code": self.code, "message": self.message, "status_code": self.status_code}
         }
 
     @classmethod
@@ -776,14 +748,13 @@ class FinnhubAPIError(Exception):
             return cls(
                 code=error_data.get("error", "API_ERROR"),
                 message=error_data.get("message", str(response.text)),
-                status_code=response.status_code
+                status_code=response.status_code,
             )
         except:
             return cls(
-                code="API_ERROR",
-                message=str(response.text),
-                status_code=response.status_code
+                code="API_ERROR", message=str(response.text), status_code=response.status_code
             )
+
 
 # tools/_common.py
 def missing_parameter(name: str) -> Dict[str, Any]:
@@ -791,16 +762,17 @@ def missing_parameter(name: str) -> Dict[str, Any]:
         "error": {
             "code": "MISSING_PARAMETER",
             "message": f"Missing required parameter '{name}'",
-            "details": {"parameter": name}
+            "details": {"parameter": name},
         }
     }
+
 
 def invalid_parameter(name: str, expected: str) -> Dict[str, Any]:
     return {
         "error": {
             "code": "INVALID_PARAMETER",
             "message": f"Parameter '{name}' must be {expected}",
-            "details": {"parameter": name, "expected": expected}
+            "details": {"parameter": name, "expected": expected},
         }
     }
 ```
@@ -823,6 +795,7 @@ import pytest
 from mcp_fred.config import AppConfig
 from mcp_fred.server import ServerContext
 
+
 @pytest.fixture
 def mock_config():
     """Mock configuration for testing."""
@@ -832,6 +805,7 @@ def mock_config():
         safe_token_limit=50000,
     )
 
+
 @pytest.fixture
 async def server_context(mock_config):
     """Server context with mocked dependencies."""
@@ -839,10 +813,12 @@ async def server_context(mock_config):
     yield context
     await context.aclose()
 
+
 # tests/test_tools/test_quote.py
 import pytest
 import respx
 from httpx import Response
+
 
 @pytest.mark.asyncio
 async def test_quote_success(server_context):
@@ -852,23 +828,12 @@ async def test_quote_success(server_context):
     with respx.mock:
         respx.get("https://finnhub.io/api/v1/quote").mock(
             return_value=Response(
-                200,
-                json={
-                    "c": 150.25,
-                    "h": 151.00,
-                    "l": 149.50,
-                    "o": 150.00,
-                    "pc": 149.75
-                }
+                200, json={"c": 150.25, "h": 151.00, "l": 149.50, "o": 150.00, "pc": 149.75}
             )
         )
 
         # Call tool
-        result = await finnhub_quote(
-            server_context,
-            operation="get",
-            symbol="AAPL"
-        )
+        result = await finnhub_quote(server_context, operation="get", symbol="AAPL")
 
         # Assert
         assert result["status"] == "success"
