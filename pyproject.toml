@@ -43,8 +43,6 @@ dependencies = [
     # HTTP/SSE transport dependencies
     "uvicorn>=0.30.0",
     "starlette>=0.38.0",
-    "pytest>=7.4.4",
-    "ruff>=0.15.0",
 ]
 
 [project.optional-dependencies]
