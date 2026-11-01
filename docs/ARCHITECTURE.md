@@ -461,6 +461,7 @@ FINNHUB_ENABLE_SPECIALIZED=false          # Misc endpoints
 ```python
 # src/mcp_finnhub/config.py
 
+
 class ToolConfig(BaseModel):
     """Tool enable/disable configuration."""
 
@@ -521,6 +522,7 @@ class ToolConfig(BaseModel):
 
 ```python
 # src/mcp_finnhub/server.py
+
 
 def register_tools(server: Server, context: ServerContext) -> None:
     """Register MCP tools based on configuration."""
@@ -615,6 +617,7 @@ Based on mcp-fred pattern:
 ```python
 # src/mcp_finnhub/api/endpoints/technical_analysis.py
 
+
 class TechnicalAnalysisAPI:
     def __init__(self, client: FinnhubClient):
         self.client = client
@@ -626,7 +629,7 @@ class TechnicalAnalysisAPI:
         from_ts: int,
         to_ts: int,
         indicator: str,
-        **indicator_fields
+        **indicator_fields,
     ) -> IndicatorResponse:
         params = {
             "symbol": symbol,
@@ -634,15 +637,11 @@ class TechnicalAnalysisAPI:
             "from": from_ts,
             "to": to_ts,
             "indicator": indicator,
-            **indicator_fields
+            **indicator_fields,
         }
         return await self.client.get("/indicator", params=params)
 
-    async def aggregate_signals(
-        self,
-        symbol: str,
-        resolution: str
-    ) -> AggregateSignalsResponse:
+    async def aggregate_signals(self, symbol: str, resolution: str) -> AggregateSignalsResponse:
         params = {"symbol": symbol, "resolution": resolution}
         return await self.client.get("/scan/technical-indicator", params=params)
 ```
@@ -711,11 +710,7 @@ class FinnhubAPIError(Exception):
 
     def to_dict(self) -> dict:
         return {
-            "error": {
-                "code": self.code,
-                "message": self.message,
-                "status_code": self.status_code
-            }
+            "error": {"code": self.code, "message": self.message, "status_code": self.status_code}
         }
 ```
 
