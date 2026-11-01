@@ -309,6 +309,7 @@ import pytest
 from mcp_finnhub.config import AppConfig, ToolConfig
 from mcp_finnhub.server import ServerContext
 
+
 @pytest.fixture
 def mock_config():
     """Mock configuration for testing."""
@@ -320,8 +321,9 @@ def mock_config():
             technical_analysis=True,
             stock_market_data=True,
             news_sentiment=True,
-        )
+        ),
     )
+
 
 @pytest.fixture
 async def server_context(mock_config):
@@ -330,11 +332,13 @@ async def server_context(mock_config):
     yield context
     await context.aclose()
 
+
 # tests/test_tools/test_quote.py
 import pytest
 import respx
 from httpx import Response
 from mcp_finnhub.tools.stock_market_data import finnhub_stock_market_data
+
 
 @pytest.mark.asyncio
 async def test_quote_success(server_context):
@@ -350,23 +354,20 @@ async def test_quote_success(server_context):
                     "h": 151.00,  # High
                     "l": 149.50,  # Low
                     "o": 150.00,  # Open
-                    "pc": 149.75, # Previous close
-                    "t": 1699999999
-                }
+                    "pc": 149.75,  # Previous close
+                    "t": 1699999999,
+                },
             )
         )
 
         # Call tool
-        result = await finnhub_stock_market_data(
-            server_context,
-            operation="quote",
-            symbol="AAPL"
-        )
+        result = await finnhub_stock_market_data(server_context, operation="quote", symbol="AAPL")
 
         # Assert
         assert "error" not in result
         assert result["data"]["c"] == 150.25
         assert result["data"]["symbol"] == "AAPL"
+
 
 @pytest.mark.asyncio
 async def test_quote_missing_symbol(server_context):
@@ -374,7 +375,7 @@ async def test_quote_missing_symbol(server_context):
 
     result = await finnhub_stock_market_data(
         server_context,
-        operation="quote"
+        operation="quote",
         # Missing symbol
     )
 
@@ -383,23 +384,17 @@ async def test_quote_missing_symbol(server_context):
     assert result["error"]["code"] == "MISSING_PARAMETER"
     assert "symbol" in result["error"]["message"]
 
+
 @pytest.mark.asyncio
 async def test_quote_api_error(server_context):
     """Test quote with API error."""
 
     with respx.mock:
         respx.get("https://finnhub.io/api/v1/quote").mock(
-            return_value=Response(
-                401,
-                json={"error": "Invalid API key"}
-            )
+            return_value=Response(401, json={"error": "Invalid API key"})
         )
 
-        result = await finnhub_stock_market_data(
-            server_context,
-            operation="quote",
-            symbol="AAPL"
-        )
+        result = await finnhub_stock_market_data(server_context, operation="quote", symbol="AAPL")
 
         assert "error" in result
         assert result["error"]["status_code"] == 401
