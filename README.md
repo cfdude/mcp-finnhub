@@ -236,14 +236,14 @@ git clone https://github.com/cfdude/mcp-finnhub.git
 cd mcp-finnhub
 
 # Install with dev dependencies
-pip install -e ".[dev]"
+uv sync --all-extras
 
 # Run tests
-pytest --cov=mcp_finnhub --cov-report=term-missing
+uv run pytest --cov=mcp_finnhub --cov-report=term-missing
 
 # Lint and format
-ruff check --fix .
-ruff format .
+uv run ruff check --fix .
+uv run ruff format .
 ```
 
 ### Running Locally
